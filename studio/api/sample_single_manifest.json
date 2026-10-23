@@ -1,0 +1,30 @@
+{
+  "project": "cyber_mouse_demo",
+  "batch_id": "studio_single_test_01",
+  "title": "Studio 单次/多规格测试清单 (支持 16:9 / 9:16 / 1:1, 512p / 768p / 1080p, 2s~10s)",
+  "aspect_ratio": "16:9",
+  "quality": "768p",
+  "duration_sec": 5.0,
+  "fps": 24,
+  "steps": 8,
+  "cfg": 1.0,
+  "resize_mode": "cover",
+  "storyboards": [
+    {
+      "shot_id": "shot_01_cyber_mouse_orbit",
+      "title": "单镜头实验：透明电竞鼠标暗场蓝橙流光环绕推轨",
+      "prompt": "Editorial tech product film. The transparent gaming mouse from <Picture 1> in its original scene: a pitch-black studio void with a dark, subtle reflective surface, lit by dramatic duotone vibrant blue and warm neon orange rim lighting, deep soft shadow falloff into pure black. Monochromatic dark palette with electric blue and amber accents. Material motif: glowing internal metallic micro-circuits, translucent matte polycarbonate shell, and subtle specular highlights on the scroll wheel. Camera: smooth cinematic 3D orbital push-in around the mouse with a subtle Dutch-angle level transition to a crisp hero profile lock-on. Ambient cyberpunk synth drone with subtle mechanical micro-clicks and clean bass resonance.",
+      "negative_prompt": "",
+      "first_frame": "assets/shot01_first.png",
+      "last_frame": "assets/shot01_last.png"
+    }
+  ],
+  "jobs": [
+    {
+      "job_id": "job_01_shot01_seed42",
+      "shot_id": "shot_01_cyber_mouse_orbit",
+      "seed": 42,
+      "note": "单次生成验证 (Run 12 [S8-FullStack-Pareto])"
+    }
+  ]
+}

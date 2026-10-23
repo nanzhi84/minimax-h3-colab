@@ -1,0 +1,73 @@
+{
+  "batch_id": "exp05_run12_batch_6jobs",
+  "title": "Experiment 05 自媒体多镜头批处理验证清单 (全量锁定 ADR-03 Run 12 [S8-FullStack-Pareto], 3 分镜 × 6 任务)",
+  "resolution": [1344, 768],
+  "num_frames": 124,
+  "fps": 24,
+  "steps": 8,
+  "cfg": 1.0,
+  "storyboards": [
+    {
+      "shot_id": "shot_01_cyber_mouse_orbit",
+      "title": "分镜 1：透明电竞鼠标暗场蓝橙流光环绕推轨",
+      "prompt": "Editorial tech product film. The transparent gaming mouse from <Picture 1> in its original scene: a pitch-black studio void with a dark, subtle reflective surface, lit by dramatic duotone vibrant blue and warm neon orange rim lighting, deep soft shadow falloff into pure black. Monochromatic dark palette with electric blue and amber accents. Material motif: glowing internal metallic micro-circuits, translucent matte polycarbonate shell, and subtle specular highlights on the scroll wheel. Camera: smooth cinematic 3D orbital push-in around the mouse with a subtle Dutch-angle level transition to a crisp hero profile lock-on. Ambient cyberpunk synth drone with subtle mechanical micro-clicks and clean bass resonance.",
+      "negative_prompt": "",
+      "first_frame": "assets/shot01_first.png",
+      "last_frame": "assets/shot01_last.png"
+    },
+    {
+      "shot_id": "shot_02_neon_circuit_pulse",
+      "title": "分镜 2：鼠标透明外壳内部微距电路脉冲呼吸与低角度滑轨",
+      "prompt": "Macro commercial product cinematography. Low-angle dolly slide across the transparent gaming mouse from <Picture 1> resting on a wet obsidian glass surface. Intense cyan and fiery amber optical fibers pulse rhythmically inside the translucent shell, casting crisp caustic reflections across the dark floor. Shallow depth of field with smooth rack focus from the metallic scroll wheel to the glowing internal PCB core. Deep electronic sub-bass pulse synchronized with high-tech crystalline shimmer.",
+      "negative_prompt": "",
+      "first_frame": "assets/shot01_first.png",
+      "last_frame": "assets/shot01_last.png"
+    },
+    {
+      "shot_id": "shot_03_hero_reveal_finale",
+      "title": "分镜 3：终章顶光掠影揭幕与对称定格特写",
+      "prompt": "High-contrast luxury hardware reveal film. The transparent gaming mouse from <Picture 1> emerges from deep shadow as a razor-thin beam of warm amber and electric blue rim light sweeps across its sculpted translucent body, culminating in a locked hero close-up. Crisp studio acoustic atmosphere with a rising cinematic synth chord and a precise mechanical switch click at the final lock.",
+      "negative_prompt": "",
+      "first_frame": "assets/shot01_first.png",
+      "last_frame": "assets/shot01_last.png"
+    }
+  ],
+  "jobs": [
+    {
+      "job_id": "job_01_shot01_seed42",
+      "shot_id": "shot_01_cyber_mouse_orbit",
+      "seed": 42,
+      "note": "分镜1 种子42 (Run 12 标准配置)"
+    },
+    {
+      "job_id": "job_02_shot01_seed108",
+      "shot_id": "shot_01_cyber_mouse_orbit",
+      "seed": 108,
+      "note": "分镜1 种子108 变体 (0.0s 复用分镜1条件张量)"
+    },
+    {
+      "job_id": "job_03_shot01_seed2026",
+      "shot_id": "shot_01_cyber_mouse_orbit",
+      "seed": 2026,
+      "note": "分镜1 种子2026 变体 (0.0s 复用分镜1条件张量)"
+    },
+    {
+      "job_id": "job_04_shot02_seed77",
+      "shot_id": "shot_02_neon_circuit_pulse",
+      "seed": 77,
+      "note": "分镜2 种子77 (Run 12 标准配置)"
+    },
+    {
+      "job_id": "job_05_shot02_seed888",
+      "shot_id": "shot_02_neon_circuit_pulse",
+      "seed": 888,
+      "note": "分镜2 种子888 变体 (0.0s 复用分镜2条件张量)"
+    },
+    {
+      "job_id": "job_06_shot03_seed99",
+      "shot_id": "shot_03_hero_reveal_finale",
+      "seed": 99,
+      "note": "分镜3 种子99 终章镜头 (Run 12 标准配置)"
+    }
+  ]
+}

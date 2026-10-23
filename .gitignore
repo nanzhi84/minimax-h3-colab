@@ -1,0 +1,30 @@
+# Universal Harness runtime & verification sandboxes
+work/
+artifacts/
+
+# Experiment & Studio outputs
+output/
+outputs/
+*.tar
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Credentials & Secrets (Never commit)
+.env
+.env.*
+*token*.json
+*secret*.json
+*credentials*.json
+*.pem
+*.key
+
+# OS & Editor files
+.DS_Store
+Thumbs.db

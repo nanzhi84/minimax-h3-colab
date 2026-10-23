@@ -1,0 +1,100 @@
+{
+  "project": "synapse_drift_30s",
+  "batch_id": "synapse_drift_6shots_30s",
+  "title": "开源社区 30 秒赛博科幻短片《SYNAPSE DRIFT (突触漂移)》(6 分镜 × 5.17s = 31.0s 声画同源)",
+  "aspect_ratio": "16:9",
+  "quality": "768p",
+  "duration_sec": 5.0,
+  "fps": 24,
+  "steps": 8,
+  "cfg": 1.0,
+  "resize_mode": "cover",
+  "storyboards": [
+    {
+      "shot_id": "shot_01_skyline_precipice",
+      "title": "镜头 1 (00:00-00:05)：摩天楼边缘远景推进 — 酸雨与巨型全息深渊",
+      "prompt": "[0s-2s] Extreme wide cinematic establishing shot on Arri Alexa 65 anamorphic lens. A lone mid-30s cyber-operative in a weathered dark waterproof trench coat stands at the rain-slicked concrete edge of a towering brutalist skyscraper, looking down into a vertical cyberpunk metropolis choked with cyan and magenta holographic Kanji billboards. Heavy rain lashes across the frame with deep rumbling thunder and a low analog sub-bass synth drone. [2s-5s] Slow forward tracking dolly push-in toward the operative's back as gusts of wind whip his coat tails and neon reflections shimmer across wet rooftop puddles, accompanied by howling high-altitude wind and rhythmic rain clatter.",
+      "negative_prompt": "",
+      "first_frame": "",
+      "last_frame": ""
+    },
+    {
+      "shot_id": "shot_02_operative_closeup",
+      "title": "镜头 2 (00:05-00:10)：特工面部近景特写 — 颈部琥珀色神经接口脉冲",
+      "prompt": "[0s-2s] Eye-level medium close-up, shallow depth of field with anamorphic circular neon bokeh in the background. The mid-30s cyber-operative with rough stubble and a faint cheekbone scar turns his head slowly toward the camera, rainwater streaming down his skin. Soft rain pattering on heavy fabric and a tense low heartbeat pulse. [2s-5s] Subtle camera push-in onto his jawline and neck as the glowing amber fiber-optic data cable plugged into his metallic neck port pulses with a rhythmic golden light, synced with a crisp high-tech electronic hum and a sharp intake of breath.",
+      "negative_prompt": "",
+      "first_frame": "",
+      "last_frame": ""
+    },
+    {
+      "shot_id": "shot_03_pulse_pistol_charge",
+      "title": "镜头 3 (00:10-00:15)：微距特写 — 机械义手拉动钛合金脉冲手枪充能",
+      "prompt": "[0s-2s] Low-angle macro insert shot in a dark rain-soaked alley. A scuffed black carbon-fiber mechanical hand firmly grips a battle-damaged matte-titanium pulse pistol, raindrops bouncing off the oiled metal casing. Heavy metallic handling click and rain splashing. [2s-5s] Quick tight tracking pan as the mechanical fingers rack the heavy charging slide backward with a harsh metallic scrape; bright electric blue plasma sparks crackle from the exposed energy chamber, accompanied by a rising capacitor whine that locks with a crisp mechanical snap.",
+      "negative_prompt": "",
+      "first_frame": "",
+      "last_frame": ""
+    },
+    {
+      "shot_id": "shot_04_alleyway_sprint",
+      "title": "镜头 4 (00:15-00:20)：窄巷低角度侧跟拍 — 踏碎霓虹积水高速疾跑",
+      "prompt": "[0s-2s] Dynamic low-angle lateral Steadicam tracking shot at full sprint speed. The cyber-operative in his weathered dark trench coat sprints hard through a narrow steam-filled cyberpunk alleyway, heavy boots slamming into deep puddles and sending sheets of neon-lit water flying. Loud rapid footsteps splashing through water and urgent breathing. [2s-5s] Camera tracks alongside him as flickering magenta and teal vendor holograms streak past in motion blur, steam vents hissing loudly as he rounds a rusted industrial corner.",
+      "negative_prompt": "",
+      "first_frame": "",
+      "last_frame": ""
+    },
+    {
+      "shot_id": "shot_05_drone_standoff",
+      "title": "镜头 5 (00:20-00:25)：越肩急推对峙 — 巨型多眼安保无人机猩红锁定",
+      "prompt": "[0s-2s] Over-the-shoulder medium shot transitioning into a tense push-in. The cyber-operative skids to a halt on wet concrete, boots scraping with a gritty spray of water as he raises the glowing blue pulse pistol forward. [2s-5s] Opposite him in the smoky alleyway, a massive armored multi-eyed security drone hovers out of the fog; its central optical lens expands and ignites with a blinding crimson targeting laser, accompanied by a menacing mechanical servo whine and a loud acoustic lock-on alarm.",
+      "negative_prompt": "",
+      "first_frame": "",
+      "last_frame": ""
+    },
+    {
+      "shot_id": "shot_06_climax_beam_cut",
+      "title": "镜头 6 (00:25-00:30)：终章极速冲镜 — 能量光束爆发与胶片过曝切黑",
+      "prompt": "[0s-2s] Extreme close-up point-of-view shot rushing rapidly forward toward the hovering security drone's glowing crimson core as rain droplets freeze in the intense red glare. Rising high-voltage sub-bass charge sound. [2s-5s] The drone unleashes a blinding beam of pure white-hot plasma directly toward the lens, filling the entire widescreen frame with anamorphic optical lens flare and dramatic film burn overexposure before cutting sharply to pitch black, synced with a thunderous energy blast and a deep reverberating metallic boom.",
+      "negative_prompt": "",
+      "first_frame": "",
+      "last_frame": ""
+    }
+  ],
+  "jobs": [
+    {
+      "job_id": "job_01_shot01_seed42",
+      "shot_id": "shot_01_skyline_precipice",
+      "seed": 42,
+      "note": "00:00-00:05 摩天楼边缘远景推进"
+    },
+    {
+      "job_id": "job_02_shot02_seed42",
+      "shot_id": "shot_02_operative_closeup",
+      "seed": 42,
+      "note": "00:05-00:10 特工面部与颈部接口特写"
+    },
+    {
+      "job_id": "job_03_shot03_seed42",
+      "shot_id": "shot_03_pulse_pistol_charge",
+      "seed": 42,
+      "note": "00:10-00:15 机械义手脉冲手枪充能微距"
+    },
+    {
+      "job_id": "job_04_shot04_seed42",
+      "shot_id": "shot_04_alleyway_sprint",
+      "seed": 42,
+      "note": "00:15-00:20 窄巷踏水高速侧跟拍"
+    },
+    {
+      "job_id": "job_05_shot05_seed42",
+      "shot_id": "shot_05_drone_standoff",
+      "seed": 42,
+      "note": "00:20-00:25 越肩急推无人机猩红锁定"
+    },
+    {
+      "job_id": "job_06_shot06_seed42",
+      "shot_id": "shot_06_climax_beam_cut",
+      "seed": 42,
+      "note": "00:25-00:30 终章能量束爆发切黑"
+    }
+  ]
+}

@@ -1,0 +1,297 @@
+{
+  "audit_date": "2026-10-23",
+  "timezone": "Asia/Singapore",
+  "scope": "Source inspection, GitHub issue/PR searches, CPU schedule replay, and existing experiment artifact checks; no new GPU inference.",
+  "sources": [
+    {
+      "id": "core_sparse_experiment",
+      "repo": "Comfy-Org/ComfyUI",
+      "ref": "f5ea88af1c46c50a39792d00af80e5af941f99f6",
+      "path": "comfy_extras/nodes_sparse_attention.py",
+      "blob": "006d1eb352f946a7c85595edf75d3cda9ac79194",
+      "latest_ref": "d07dff4565ea9804277fff8cdfa0c817e08c3d44",
+      "latest_file_identical": true,
+      "excerpts": [
+        {
+          "start_line": 248,
+          "end_line": 301,
+          "code": "def h3_sparse_attention(attn, x, rope_freqs, transformer_options, patch: SparseAttnPatch, block_index):\n    \"\"\"H3 attention through the chunked producer: qkv projected in 4K-token\n    slices straight into the kernel's int8 carriers, full Q/K/V never built.\"\"\"\n    n_tokens = x.shape[0]\n    heads, head_dim = attn.heads, attn.head_dim\n    qw = comfy.model_management.cast_to(attn.q_norm.weight, device=x.device)\n    kw = comfy.model_management.cast_to(attn.k_norm.weight, device=x.device)\n    extra, plan, gate = {}, None, None\n    n, freqs = n_tokens, rope_freqs\n    with comfy.model_prefetch.pause_malloc_graph():\n        if patch.vsa:\n            plan = patch.vsa_plan(transformer_options[\"minimax_h3_layout\"], x.device)\n            n = plan[\"n\"]\n            freqs = patch.vsa_rope_freqs(rope_freqs, plan)\n\n        key = (block_index, n, tuple(transformer_options.get(\"uuids\", ())))   # statistics per conditioning branch\n        pooled = patch.pooled.get(key)\n        first = pooled is None\n        if first:\n            pooled = (\n                torch.empty((heads, head_dim), dtype=torch.float32, device=x.device),\n                torch.empty((heads, head_dim), dtype=torch.float32, device=x.device),\n            )\n\n    if patch.vsa:\n        sink = sink_q = (0, plan[\"n_prefix\"])\n        extra = {\"tail\": False, \"block_len\": plan[\"block_len\"]}\n        gate = attn.to_gate_compress\n        if gate is not None:\n            extra[\"coarse_gate\"] = x.new_empty(n, heads * head_dim).view(1, n, heads, head_dim)\n    else:\n        sink, sink_q = patch.sinks(transformer_options, n_tokens)\n\n    def chunks():\n        for i in range(0, n, PRODUCER_CHUNK):\n            if plan is None:\n                yield attn.qkv_proj(x[i:i + PRODUCER_CHUNK])\n                continue\n            idx = plan[\"src\"][i:i + PRODUCER_CHUNK]\n            xc = x[idx.clamp_min(0)] * (idx >= 0).unsqueeze(1).to(x.dtype)   # pad rows zero\n            if gate is not None:\n                extra[\"coarse_gate\"].view(n, heads * head_dim)[i:i + xc.shape[0]] = gate(xc)\n            yield attn.qkv_proj(xc)\n\n    out, kmean, vscale = ck.sol_attn_chunked(\n        chunks, n, heads, freqs, (qw, kw),\n        kmean=None if first else pooled[0],\n        vscale=None if first else pooled[1],\n        tau=patch.tau, topk_ratio=patch.topk_ratio, token_aug=patch.extra_tokens,\n        sink_blocks=list(sink), sink_q=list(sink_q),\n        rope_eps=attn.q_norm.eps, **extra)\n    pooled[0].copy_(kmean)\n    pooled[1].copy_(vscale)\n    patch.pooled[key] = pooled"
+        }
+      ],
+      "url": "https://github.com/Comfy-Org/ComfyUI/blob/f5ea88af1c46c50a39792d00af80e5af941f99f6/comfy_extras/nodes_sparse_attention.py"
+    },
+    {
+      "id": "kitchen_producer",
+      "repo": "Comfy-Org/comfy-kitchen",
+      "ref": "f8b7e97a1418d2e529bd5405fbf86312be198ae6",
+      "tag": "v0.2.40",
+      "path": "comfy_kitchen/backends/cuda/__init__.py",
+      "blob": "66bcc64fdc81323e3f30d46b4cc85daa31af48c7",
+      "latest_file_identical": true,
+      "excerpts": [
+        {
+          "start_line": 3100,
+          "end_line": 3203,
+          "code": "def sol_attn_chunked(\n    qkv_chunks,\n    t: int,\n    h: int,\n    rope_freqs: torch.Tensor,\n    qk_norm_weights: tuple[torch.Tensor, torch.Tensor],\n    kmean: torch.Tensor | None = None,\n    vscale: torch.Tensor | None = None,\n    tau: float = 1.0,\n    topk_ratio: float = 0.0,\n    scale: float | None = None,\n    sink_blocks: list[int] | None = None,\n    sink_q: list[int] | None = None,\n    rope_eps: float = 1e-6,\n    tail: bool = True,\n    block_len: torch.Tensor | None = None,\n    coarse_gate: torch.Tensor | None = None,\n    token_aug: int = 0,\n):\n    \"\"\"Chunked-producer Sol-Attn over fused qkv projection chunks ([M, 3*H*128]\n    bf16, 64-aligned starts, B=1); full Q/K/V are never materialised.\n    ``tail`` / ``block_len`` / ``coarse_gate`` / ``token_aug`` as in ``sol_attn``.\n\n    ``qkv_chunks``: an iterable of chunks or a zero-arg callable returning one.\n    ``kmean``/``vscale`` are LAST step's statistics ([H,128] f32); when None the\n    producer runs twice (measure, then quantize), so pass a callable to stream\n    on the first call. Returns ``(out[1,T,H,128] bf16, kmean_next, vscale_next)``.\"\"\"\n    d = _SOL_HD\n    rot = rope_freqs.shape[-3] * 2\n    # the fused rope pairs channels across lanes of 4: rot/2 must be lane-aligned\n    if rot % 8 or not 0 < rot <= d:\n        raise ValueError(f\"sol_attn_chunked: rot_dim must be a multiple of 8 in (0, {d}], got {rot}\")\n    fab = _packed_rope_fab(rope_freqs, t, rot)\n    dev = fab.device\n    _check_sol_args(dev, sink_blocks, sink_q, topk_ratio)\n    if scale is None:\n        scale = d ** -0.5\n    if block_len is not None:\n        block_len = _check_block_len(block_len, t, dev)\n    if coarse_gate is not None:\n        coarse_gate = _check_coarse_gate(coarse_gate, (1, t, h, d), dev)\n    lengths = _block_lengths(t, (t + 63) // 64, dev, block_len)\n    qw, kw = (w.to(device=dev, dtype=torch.bfloat16).contiguous() for w in qk_norm_weights)\n    factory = qkv_chunks if callable(qkv_chunks) else None\n    if factory is None and (kmean is None or vscale is None):\n        qkv_chunks = list(qkv_chunks)          # need two passes over it\n        factory = lambda: iter(qkv_chunks)     # noqa: E731\n    p = _C.sol_attn_plan(1, t, h, token_aug=int(token_aug))\n    ws = torch.empty(p[\"total\"], dtype=torch.uint8, device=dev)\n    stream = torch.cuda.current_stream(dev).cuda_stream\n    width = 3 * h * d\n\n    def produce(km, vsc):\n        _C.sol_producer_begin(_wrap_for_dlpack(ws), 1, t, h, stream, token_aug=int(token_aug))\n        t0 = 0\n        for chunk in (factory() if factory is not None else qkv_chunks):\n            m = chunk.shape[-2]\n            if t0 % 64 and m:\n                raise ValueError(\"sol_attn_chunked: chunk starts must be 64-aligned\")\n            # bare pointers below: a wrong width reads OOB, a host tensor poisons the context\n            if chunk.shape[-1] != width or chunk.dtype != torch.bfloat16 or chunk.device != dev:\n                raise ValueError(\n                    f\"sol_attn_chunked: chunks must be [M, {width}] bfloat16 on {dev}, \"\n                    f\"got {tuple(chunk.shape)} {chunk.dtype} on {chunk.device}\")\n            _C.sol_producer_chunk(\n                _wrap_for_dlpack(ws), _wrap_for_dlpack(chunk.contiguous()),\n                _wrap_for_dlpack(fab), _wrap_for_dlpack(qw), _wrap_for_dlpack(kw),\n                _wrap_for_dlpack(km), _wrap_for_dlpack(vsc),\n                float(rope_eps), rot, t0, m, 1, t, h, stream,\n                block_len=None if block_len is None else _wrap_for_dlpack(block_len),\n                token_aug=int(token_aug))\n            t0 += m\n        if t0 != t:\n            raise ValueError(f\"sol_attn_chunked: chunks cover {t0} tokens, T={t}\")\n\n    def vscale_of(vamax):\n        return (vamax / 127.0 * _SOL_VSCALE_MARGIN).clamp_min(1e-8)\n\n    if kmean is None or vscale is None:\n        # bootstrap: harvest the scale-independent statistics (post-rope K\n        # sums, V absmax) with dummy scales, then produce for real\n        produce(torch.zeros(h, d, device=dev), torch.ones(h, d, device=dev))\n        kmean = _ws_ksums(ws, p, h).sum(1) / lengths.sum()   # live tokens, like prep_sums_to_means\n        vscale = vscale_of(ws[p[\"statsV\"]:p[\"statsV\"] + h * d * 4].view(torch.float32))\n    kmean = kmean.to(device=dev, dtype=torch.float32).contiguous()\n    # a zero scale is 1/0 in the producer and 255/0 in route: clamp like vscale_of\n    vscale = vscale.to(device=dev, dtype=torch.float32).clamp_min(1e-8).contiguous()\n    produce(kmean, vscale)\n    sb, sq = _sink_pair(sink_blocks), _sink_pair(sink_q)\n    out = torch.empty(1, t, h, d, dtype=torch.bfloat16, device=dev)\n    kmean_next = torch.empty(h, d, device=dev, dtype=torch.float32)\n    vamax = torch.empty(h, d, device=dev, dtype=torch.float32)\n    # after out, as in sol_attn\n    threshold = (_topk_threshold_from_workspace(ws, p, h, topk_ratio, scale, lengths, sb)\n                 if topk_ratio else None)\n    _C.sol_attn_core(\n        _wrap_for_dlpack(ws), _wrap_for_dlpack(out), _wrap_for_dlpack(vscale),\n        _wrap_for_dlpack(kmean_next), _wrap_for_dlpack(vamax),\n        1, t, h, float(tau), float(scale), sb[0], sb[1], sq[0], sq[1], stream,\n        threshold=None if threshold is None else _wrap_for_dlpack(threshold),\n        block_len=None if block_len is None else _wrap_for_dlpack(block_len), tail=bool(tail), token_aug=int(token_aug))\n    if coarse_gate is not None:\n        add_coarse_(out, coarse_output(*_ws_block_means(ws, p, h, lengths), scale), coarse_gate)\n    return out, kmean_next, vscale_of(vamax)"
+        }
+      ],
+      "url": "https://github.com/Comfy-Org/comfy-kitchen/blob/f8b7e97a1418d2e529bd5405fbf86312be198ae6/comfy_kitchen/backends/cuda/__init__.py"
+    },
+    {
+      "id": "community_schedule",
+      "repo": "r-vage/ComfyUI-sol-attn",
+      "ref": "69d2e4009313e5cc3a1a70ab092ed6bb54fd5cd3",
+      "path": "minimax.py",
+      "blob": "b5bec397affa15e05221f94230dec47ca661ad8c",
+      "latest_ref": "69d2e4009313e5cc3a1a70ab092ed6bb54fd5cd3",
+      "excerpts": [
+        {
+          "start_line": 464,
+          "end_line": 498,
+          "code": "class _TauSchedule:\n    \"\"\"tau ramp driven by the sampler's current sigma.\n\n    ComfyUI publishes the active timestep per model call in\n    transformer_options[\"sigmas\"]; sigma_hi/sigma_lo are the run's endpoints\n    mapped at patch time, so progress is 0 on the first step and 1 on the last.\n    \"\"\"\n\n    def __init__(self, tau_start, tau_end, curve, sigma_hi, sigma_lo):\n        self.tau_start = float(tau_start)\n        self.tau_end = float(tau_end)\n        self.curve = curve\n        self.sigma_hi = float(sigma_hi)\n        self.span = max(float(sigma_hi) - float(sigma_lo), 1e-8)\n\n    def weight(self, f):\n        if self.curve == \"cosine\":\n            return 0.5 - 0.5 * math.cos(math.pi * f)\n        if self.curve == \"sqrt\":\n            return math.sqrt(f)\n        if self.curve == \"smoothstep\":\n            return f * f * (3.0 - 2.0 * f)\n        if self.curve == \"exponential\":\n            return math.expm1(3.0 * f) / math.expm1(3.0)\n        if self.curve == \"step\":\n            return 1.0 if f >= 0.5 else 0.0\n        return f\n\n    def progress(self, sigma):\n        if sigma is None:\n            return 1.0\n        return min(max((self.sigma_hi - sigma) / self.span, 0.0), 1.0)\n\n    def tau(self, sigma):\n        return self.tau_end + (self.tau_start - self.tau_end) * self.weight(1.0 - self.progress(sigma))"
+        },
+        {
+          "start_line": 396,
+          "end_line": 399,
+          "code": "            sigmas = (transformer_options or {}).get(\"sigmas\")\n            sigma = float(sigmas.flatten()[0]) if torch.is_tensor(sigmas) and sigmas.numel() > 0 else None\n            if dense_percent > 0.0 and progress_fn is not None and progress_fn(sigma) < dense_percent:\n                raise _Unsupported(f\"dense first {dense_percent:.0%} of sampling\")"
+        }
+      ],
+      "url": "https://github.com/r-vage/ComfyUI-sol-attn/blob/69d2e4009313e5cc3a1a70ab092ed6bb54fd5cd3/minimax.py"
+    },
+    {
+      "id": "community_fusion",
+      "repo": "r-vage/ComfyUI-sol-attn",
+      "ref": "69d2e4009313e5cc3a1a70ab092ed6bb54fd5cd3",
+      "path": "sol_kernel/h3_fusion.py",
+      "blob": "cee2ad8a00d7d5708a9db0bf06ec8abb67e6e951",
+      "introduced_commit": "bd28909e6a152ba5db4e3590d2d9df1c249943f2",
+      "introduced_date": "2026-08-09",
+      "excerpts": [
+        {
+          "start_line": 13,
+          "end_line": 63,
+          "code": "@triton.jit\ndef _round_bf16_fp32(value):\n    \"\"\"Round FP32 to BF16 precision while retaining an FP32 Triton value.\n\n    A cast down and immediately back up can be optimized away. Performing the\n    round-to-nearest-even operation on the bits creates the same precision\n    barrier as Comfy's separate eager BF16 kernels.\n    \"\"\"\n    bits = value.to(tl.int32, bitcast=True)\n    bits = bits + 0x7FFF + ((bits >> 16) & 1)\n    return (bits & -65536).to(tl.float32, bitcast=True)\n\n\n@triton.jit\ndef _modulate_kernel(\n    x_ptr,\n    scale_ptr,\n    shift_ptr,\n    row_index_ptr,\n    tokens,\n    width,\n    sx_t,\n    sx_d,\n    ss_t,\n    ss_d,\n    sh_t,\n    sh_d,\n    BLOCK: tl.constexpr,\n):\n    row = tl.program_id(0)\n    cols = tl.program_id(1) * BLOCK + tl.arange(0, BLOCK)\n    valid = (row < tokens) & (cols < width)\n    table_row = tl.load(row_index_ptr + row)\n\n    x = tl.load(x_ptr + row * sx_t + cols * sx_d, mask=valid).to(tl.float32)\n    scale = tl.load(\n        scale_ptr + table_row * ss_t + cols * ss_d,\n        mask=valid,\n    ).to(tl.float32)\n    shift = tl.load(\n        shift_ptr + table_row * sh_t + cols * sh_d,\n        mask=valid,\n    ).to(tl.float32)\n\n    # Match: x.mul_(1.0 + scale.to(bf16)).add_(shift.to(bf16)).\n    scale = _round_bf16_fp32(scale)\n    shift = _round_bf16_fp32(shift)\n    one_plus_scale = _round_bf16_fp32(1.0 + scale)\n    multiplied = _round_bf16_fp32(x * one_plus_scale)\n    result = _round_bf16_fp32(multiplied + shift)\n    tl.store(x_ptr + row * sx_t + cols * sx_d, result.to(tl.bfloat16), mask=valid)"
+        }
+      ],
+      "url": "https://github.com/r-vage/ComfyUI-sol-attn/blob/69d2e4009313e5cc3a1a70ab092ed6bb54fd5cd3/sol_kernel/h3_fusion.py"
+    },
+    {
+      "id": "original_schedule",
+      "repo": "Saganaki22/ComfyUI-sol-attn",
+      "ref": "930a4d6e432ff8b8ed5e30ff2f72519b92d69bdf",
+      "path": "minimax.py",
+      "same_linear_progress": true,
+      "url": "https://github.com/Saganaki22/ComfyUI-sol-attn/blob/930a4d6e432ff8b8ed5e30ff2f72519b92d69bdf/minimax.py"
+    },
+    {
+      "id": "flow_shift",
+      "repo": "Comfy-Org/ComfyUI",
+      "ref": "f5ea88af1c46c50a39792d00af80e5af941f99f6",
+      "path": "comfy/model_sampling.py",
+      "blob": "4a55655207115a150d5254c5b364b03a6c256627",
+      "excerpts": [
+        {
+          "start_line": 289,
+          "end_line": 292,
+          "code": "def time_snr_shift(alpha, t):\n    if alpha == 1.0:\n        return t\n    return alpha * t / (1 + (alpha - 1) * t)"
+        },
+        {
+          "start_line": 328,
+          "end_line": 336,
+          "code": "    def sigma(self, timestep):\n        return time_snr_shift(self.shift, timestep / self.multiplier)\n\n    def percent_to_sigma(self, percent):\n        if percent <= 0.0:\n            return 1.0\n        if percent >= 1.0:\n            return 0.0\n        return time_snr_shift(self.shift, 1.0 - percent)"
+        }
+      ],
+      "url": "https://github.com/Comfy-Org/ComfyUI/blob/f5ea88af1c46c50a39792d00af80e5af941f99f6/comfy/model_sampling.py"
+    }
+  ],
+  "references": [
+    {
+      "key": "pr16378",
+      "number": 16378,
+      "title": "Increase MiniMax H3 sparse producer chunk size",
+      "url": "https://github.com/Comfy-Org/ComfyUI/pull/16378",
+      "state": "closed",
+      "merged": false,
+      "created_at": "2026-09-17T04:35:51Z",
+      "updated_at": "2026-09-18T18:17:47Z",
+      "merged_at": null
+    },
+    {
+      "key": "pr16404",
+      "number": 16404,
+      "title": "Avoid repeated H3 INT8 QKV casts on VBAR fallback",
+      "url": "https://github.com/Comfy-Org/ComfyUI/pull/16404",
+      "state": "open",
+      "merged": false,
+      "created_at": "2026-09-18T18:17:24Z",
+      "updated_at": "2026-09-18T18:56:35Z",
+      "merged_at": null
+    },
+    {
+      "key": "pr16072",
+      "number": 16072,
+      "title": "Add Sparse Attention node",
+      "url": "https://github.com/Comfy-Org/ComfyUI/pull/16072",
+      "state": "closed",
+      "merged": true,
+      "created_at": "2026-09-03T19:19:17Z",
+      "updated_at": "2026-09-06T01:18:26Z",
+      "merged_at": "2026-09-06T01:18:15Z"
+    },
+    {
+      "key": "ck150",
+      "number": 150,
+      "title": "sol-attn: Full-range P quantization in the exact branch and public `sol_attn_chunked`",
+      "url": "https://github.com/Comfy-Org/comfy-kitchen/pull/150",
+      "state": "closed",
+      "merged": true,
+      "created_at": "2026-09-03T08:32:53Z",
+      "updated_at": "2026-09-03T19:32:03Z",
+      "merged_at": "2026-09-03T19:31:49Z"
+    },
+    {
+      "key": "ck117data",
+      "number": 117,
+      "title": "feat: Add int8 Sol-attention (CORE-391)",
+      "url": "https://github.com/Comfy-Org/comfy-kitchen/pull/117",
+      "state": "closed",
+      "merged": true,
+      "created_at": "2026-08-13T20:58:30Z",
+      "updated_at": "2026-08-29T23:48:28Z",
+      "merged_at": "2026-08-29T23:48:17Z"
+    },
+    {
+      "key": "pr15621",
+      "number": 15621,
+      "title": "refactor: fuse rms_adaln kernel and vectorize segment modulation in MiniMaxH3",
+      "url": "https://github.com/Comfy-Org/ComfyUI/pull/15621",
+      "state": "open",
+      "merged": false,
+      "created_at": "2026-08-14T17:50:45Z",
+      "updated_at": "2026-08-14T18:36:19Z",
+      "merged_at": null
+    },
+    {
+      "key": "pr15619",
+      "number": 15619,
+      "title": "refactor: optimize MiniMaxH3 architecture with fused kernel operations and input caching",
+      "url": "https://github.com/Comfy-Org/ComfyUI/pull/15619",
+      "state": "closed",
+      "merged": false,
+      "created_at": "2026-08-14T17:13:22Z",
+      "updated_at": "2026-08-14T18:46:15Z",
+      "merged_at": null
+    },
+    {
+      "key": "pr16681",
+      "number": 16681,
+      "title": "Fuse H3 MLP INT8 output with indexed modulation gate",
+      "url": "https://github.com/Comfy-Org/ComfyUI/pull/16681",
+      "state": "open",
+      "merged": false,
+      "created_at": "2026-09-30T14:29:23Z",
+      "updated_at": "2026-10-22T18:11:29Z",
+      "merged_at": null
+    },
+    {
+      "key": "ck219",
+      "number": 219,
+      "title": "Add prequantized INT8 GEMM with indexed BF16 gate and residual",
+      "url": "https://github.com/Comfy-Org/comfy-kitchen/pull/219",
+      "state": "open",
+      "merged": false,
+      "created_at": "2026-09-30T11:16:40Z",
+      "updated_at": "2026-10-22T18:11:37Z",
+      "merged_at": null
+    },
+    {
+      "key": "ck223",
+      "number": 223,
+      "title": "Compose INT8 input quantization with indexed gate epilogue",
+      "url": "https://github.com/Comfy-Org/comfy-kitchen/pull/223",
+      "state": "open",
+      "merged": false,
+      "created_at": "2026-09-30T14:27:27Z",
+      "updated_at": "2026-10-22T18:11:40Z",
+      "merged_at": null
+    },
+    {
+      "key": "ck241",
+      "number": 241,
+      "title": "CUDA sol_attn token_aug overflow: atomic reservations select nondeterministic retained IDs despite histogram parity",
+      "url": "https://github.com/Comfy-Org/comfy-kitchen/issues/241",
+      "state": "open",
+      "merged": null,
+      "created_at": "2026-10-12T02:33:11Z",
+      "updated_at": "2026-10-12T06:09:07Z",
+      "merged_at": null
+    },
+    {
+      "key": "ck242",
+      "number": 242,
+      "title": "CUDA Sol-Attn: deterministic overflow retry with exact-tail preservation",
+      "url": "https://github.com/Comfy-Org/comfy-kitchen/pull/242",
+      "state": "open",
+      "merged": false,
+      "created_at": "2026-10-12T02:43:19Z",
+      "updated_at": "2026-10-15T13:23:40Z",
+      "merged_at": null
+    },
+    {
+      "key": "spectrum106",
+      "number": 106,
+      "title": "Audit core BlockSparseAttention and recover cold-to-primed forecasts",
+      "url": "https://github.com/xmarre/ComfyUI-Spectrum-MiniMax-H3/pull/106",
+      "state": "closed",
+      "merged": true,
+      "created_at": "2026-09-09T20:52:48Z",
+      "updated_at": "2026-09-10T18:27:08Z",
+      "merged_at": "2026-09-10T18:27:08Z"
+    },
+    {
+      "key": "sana517",
+      "number": 517,
+      "title": "fix(minimax_h3/GB10): keep Sol-Attn dispatch aligned with FirstBlockCache",
+      "url": "https://github.com/NVlabs/Sana/pull/517",
+      "state": "open",
+      "merged": false,
+      "created_at": "2026-10-01T19:11:22Z",
+      "updated_at": "2026-10-17T07:42:31Z",
+      "merged_at": null
+    }
+  ],
+  "searches": [
+    {
+      "query": "repo:r-vage/ComfyUI-sol-attn issues state=all",
+      "returned": 0
+    },
+    {
+      "query": "repo:r-vage/ComfyUI-sol-attn pulls state=all",
+      "returned": 0
+    },
+    {
+      "query": "repo:Saganaki22/ComfyUI-sol-attn issues state=all (includes PRs)",
+      "returned": 10,
+      "exact_schedule_defect_found": false
+    },
+    {
+      "query": "\"_TauSchedule\" is:issue",
+      "returned": 0,
+      "incomplete": false
+    },
+    {
+      "query": "\"H3\" \"dense_percent\" is:issue",
+      "returned": 0,
+      "incomplete": false
+    },
+    {
+      "query": "\"_TauSchedule\" is:pr",
+      "returned": 0
+    },
+    {
+      "query": "\"H3\" \"dense_percent\" is:pr",
+      "returned": 0
+    }
+  ],
+  "copyright_note": "Source excerpts retain the licensing and attribution of their respective linked upstream projects. This is a local source-audit record, not a relicensing of the excerpts."
+}
