@@ -1,0 +1,75 @@
+{
+  "project": "exp06_sub02_dynamic_parallax_15s",
+  "batch_id": "exp06_sub02_parallax_sakuga_4shots_20jobs",
+  "title": "Experiment 06 子实验 2：大跨度三维透视重构、景别跳跃与真实刚体受击反馈 (4 分镜 × 5 Seeds = 20 任务)",
+  "aspect_ratio": "16:9",
+  "quality": "768p",
+  "duration_sec": 5.0,
+  "fps": 24,
+  "steps": 8,
+  "cfg": 1.0,
+  "resize_mode": "cover",
+  "storyboards": [
+    {
+      "shot_id": "shot_01_thunder_dash",
+      "title": "分镜 1 (A->B, 24mm 高角越肩远景 -> 14mm 贴地虫视仰拍近景)：极速俯冲推镜与挑斩破防",
+      "duration_sec": 4.0,
+      "prompt": "[0.00s] <Picture 1> is fully referenced as the starting high-angle over-the-shoulder wide frame across the rain-slicked temple courtyard. Masterpiece 2D anime sakuga in Ufotable studio aesthetic, crisp hand-drawn ink lines, extreme 3D background parallax, zero blurry pixels. The camera [Push in] with large amplitude at fast speed and [Tilt up] with large amplitude at fast speed, diving low across the shattering courtyard flagstones and swooping into an extreme worm's-eye low-angle perspective as the silver-haired swordsman rockets forward in a jagged streak of cyan lightning, driving a savage two-handed upward diagonal katana strike directly into the black-armored samurai's flaming greatsword. Heavy rigid-body blade bite jolts the samurai's front boot off the stone step and twists his armored shoulders backward. At the final frames, the scene resolves into the low-angle upward perspective of <Picture 2>. Audio: explosive stone-shattering launch boom, supersonic wind rush, and a deafening metallic blade-on-blade collision.",
+      "negative_prompt": "static camera, locked background, flat 2D sticker overlay, floating weapons, no hit reaction, slow motion tai chi, 3D CGI, blurry pixels",
+      "first_frame": "assets/frame_A_ots_wide_standoff.png",
+      "last_frame": "assets/frame_B_wormseye_clash.png"
+    },
+    {
+      "shot_id": "shot_02_blade_clash_shockwave",
+      "title": "分镜 2 (B->C, 14mm 贴地仰拍 -> 120° 环绕侧跟拍)：刚体破防、胸甲凹陷碎裂与躯干 C 形后仰犁地",
+      "duration_sec": 5.0,
+      "prompt": "[0.00s] <Picture 1> is fully referenced as the direct continuation of the low-angle blade lock. High-octane 2D anime sakuga combat with brutal physical momentum transfer and Ufotable volumetric lighting. The camera [Arc shot] with large amplitude at fast speed and [Shake strongly], orbiting 120 degrees around the combatants as temple pillars streak past in rapid horizontal parallax. The silver-haired swordsman overpowers the guard and unleashes a vicious spinning follow-through slash that slams deep into the samurai's black chestplate; the steel armor visibly dents and cracks with exploding cyan electric arcs, wrenching the samurai's torso violently backward in a painful C-curve arch as his helmet tilts askew, his knees buckle, and his iron boots gouge two deep smoking trenches across the shattering stone floor. At the final frames, the scene resolves into <Picture 2>. Audio: screeching steel grind, bone-crushing armor impact crunch, roaring thunder shockwave, and stone tiles ripping apart.",
+      "negative_prompt": "static camera, locked background, flat 2D sticker overlay, floating weapons, no hit reaction, stiff standing opponent, 3D CGI, blurry pixels",
+      "first_frame": "assets/frame_B_wormseye_clash.png",
+      "last_frame": "assets/frame_C_orbital_knockback.png"
+    },
+    {
+      "shot_id": "shot_03_eye_awakening_slash",
+      "title": "分镜 3 (D->E, 85mm 微距眼部刀锋特写 -> 12mm 超广角高空夸张近大远小跃斩)：极速拉镜与腾空化龙扑镜",
+      "duration_sec": 3.0,
+      "prompt": "[0.00s] <Picture 1> is fully referenced as the starting extreme macro close-up on the silver-haired swordsman's blazing cyan eyes and plasma-wrapped katana blade. Dynamic 2D anime sakuga with extreme Kanada-style perspective foreshortening. The camera [Pull out] with large amplitude at fast speed and [Tilt down] with medium amplitude at fast speed as the swordsman leaps explosively into mid-air while the temple floor drops steeply away below; he swings his katana toward the right foreground in an extreme wide-angle foreshortened arc, birthing the massive roaring jaws of a translucent azure lightning dragon lunging straight at the lens. At the final frames, the scene resolves into the airborne foreshortened perspective of <Picture 2>. Audio: high-voltage plasma overload whine, explosive mid-air sonic boom, and a thunderous dragon roar.",
+      "negative_prompt": "static camera, locked background, flat perspective, slow motion, 3D CGI, blurry pixels, deformed face",
+      "first_frame": "assets/frame_D_macro_eye_blade.png",
+      "last_frame": "assets/frame_E_foreshortened_dragon_leap.png"
+    },
+    {
+      "shot_id": "shot_04_dragon_finale_blast",
+      "title": "分镜 4 (E->F, 12mm 空中近景扑镜 -> 30m 高空鸟瞰全景急拉)：雷龙贯穿大殿、武士轰飞撞穿石墙与屋顶掀飞",
+      "duration_sec": 5.0,
+      "prompt": "[0.00s] <Picture 1> is fully referenced as the direct continuation of the mid-air dragon lunge. Theatrical masterpiece 2D anime sakuga finale in Ufotable style. The camera [Pull out] with large amplitude at fast speed and [Shake strongly], rocketing high above the crumbling temple roof into a colossal bird's-eye crane view as the gargantuan azure lightning dragon tears straight through the temple hall, ragdolling the black-armored samurai backward through a collapsing stone sanctuary wall, blowing half the temple roof tiles skyward in concentric zero-gravity shockwave rings, and erupting into a sky-piercing pillar of cyan and gold plasma. At the final frames, the scene resolves into the high-altitude aerial view of <Picture 2>. Audio: cataclysmic sub-bass lightning detonation, crashing stone walls and timber roof explosion, and echoing storm thunder.",
+      "negative_prompt": "static camera, locked background, no destruction, slow motion, 3D CGI, blurry pixels",
+      "first_frame": "assets/frame_E_foreshortened_dragon_leap.png",
+      "last_frame": "assets/frame_F_high_altitude_obliteration.png"
+    }
+  ],
+  "jobs": [
+    {"job_id": "job_01_shot01_seed42",   "shot_id": "shot_01_thunder_dash",          "seed": 42,   "note": "Sub02 Shot 1 (A->B OTS to Worm's-Eye) Seed 42"},
+    {"job_id": "job_02_shot01_seed108",  "shot_id": "shot_01_thunder_dash",          "seed": 108,  "note": "Sub02 Shot 1 (A->B OTS to Worm's-Eye) Seed 108"},
+    {"job_id": "job_03_shot01_seed777",  "shot_id": "shot_01_thunder_dash",          "seed": 777,  "note": "Sub02 Shot 1 (A->B OTS to Worm's-Eye) Seed 777"},
+    {"job_id": "job_04_shot01_seed1337", "shot_id": "shot_01_thunder_dash",          "seed": 1337, "note": "Sub02 Shot 1 (A->B OTS to Worm's-Eye) Seed 1337"},
+    {"job_id": "job_05_shot01_seed2026", "shot_id": "shot_01_thunder_dash",          "seed": 2026, "note": "Sub02 Shot 1 (A->B OTS to Worm's-Eye) Seed 2026"},
+
+    {"job_id": "job_06_shot02_seed42",   "shot_id": "shot_02_blade_clash_shockwave", "seed": 42,   "note": "Sub02 Shot 2 (B->C Worm's-Eye to 120° Orbit Knockback) Seed 42"},
+    {"job_id": "job_07_shot02_seed108",  "shot_id": "shot_02_blade_clash_shockwave", "seed": 108,  "note": "Sub02 Shot 2 (B->C Worm's-Eye to 120° Orbit Knockback) Seed 108"},
+    {"job_id": "job_08_shot02_seed777",  "shot_id": "shot_02_blade_clash_shockwave", "seed": 777,  "note": "Sub02 Shot 2 (B->C Worm's-Eye to 120° Orbit Knockback) Seed 777"},
+    {"job_id": "job_09_shot02_seed1337", "shot_id": "shot_02_blade_clash_shockwave", "seed": 1337, "note": "Sub02 Shot 2 (B->C Worm's-Eye to 120° Orbit Knockback) Seed 1337"},
+    {"job_id": "job_10_shot02_seed2026", "shot_id": "shot_02_blade_clash_shockwave", "seed": 2026, "note": "Sub02 Shot 2 (B->C Worm's-Eye to 120° Orbit Knockback) Seed 2026"},
+
+    {"job_id": "job_11_shot03_seed42",   "shot_id": "shot_03_eye_awakening_slash",   "seed": 42,   "note": "Sub02 Shot 3 (D->E Macro Eye to Wide Foreshortened Leap) Seed 42"},
+    {"job_id": "job_12_shot03_seed108",  "shot_id": "shot_03_eye_awakening_slash",   "seed": 108,  "note": "Sub02 Shot 3 (D->E Macro Eye to Wide Foreshortened Leap) Seed 108"},
+    {"job_id": "job_13_shot03_seed777",  "shot_id": "shot_03_eye_awakening_slash",   "seed": 777,  "note": "Sub02 Shot 3 (D->E Macro Eye to Wide Foreshortened Leap) Seed 777"},
+    {"job_id": "job_14_shot03_seed1337", "shot_id": "shot_03_eye_awakening_slash",   "seed": 1337, "note": "Sub02 Shot 3 (D->E Macro Eye to Wide Foreshortened Leap) Seed 1337"},
+    {"job_id": "job_15_shot03_seed2026", "shot_id": "shot_03_eye_awakening_slash",   "seed": 2026, "note": "Sub02 Shot 3 (D->E Macro Eye to Wide Foreshortened Leap) Seed 2026"},
+
+    {"job_id": "job_16_shot04_seed42",   "shot_id": "shot_04_dragon_finale_blast",   "seed": 42,   "note": "Sub02 Shot 4 (E->F Mid-Air Leap to Bird's-Eye Obliteration) Seed 42"},
+    {"job_id": "job_17_shot04_seed108",  "shot_id": "shot_04_dragon_finale_blast",   "seed": 108,  "note": "Sub02 Shot 4 (E->F Mid-Air Leap to Bird's-Eye Obliteration) Seed 108"},
+    {"job_id": "job_18_shot04_seed777",  "shot_id": "shot_04_dragon_finale_blast",   "seed": 777,  "note": "Sub02 Shot 4 (E->F Mid-Air Leap to Bird's-Eye Obliteration) Seed 777"},
+    {"job_id": "job_19_shot04_seed1337", "shot_id": "shot_04_dragon_finale_blast",   "seed": 1337, "note": "Sub02 Shot 4 (E->F Mid-Air Leap to Bird's-Eye Obliteration) Seed 1337"},
+    {"job_id": "job_20_shot04_seed2026", "shot_id": "shot_04_dragon_finale_blast",   "seed": 2026, "note": "Sub02 Shot 4 (E->F Mid-Air Leap to Bird's-Eye Obliteration) Seed 2026"}
+  ]
+}

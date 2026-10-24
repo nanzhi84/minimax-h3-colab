@@ -15,7 +15,7 @@ import subprocess
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
     from .manifest_schema import (
@@ -54,11 +54,18 @@ EST_VLM_ENCODE_PER_UNIQUE_SHOT_SEC = 3.58
 EST_GDRIVE_EGRESS_STAGE1_SEC = 1.85
 
 
-def resolve_or_seed_default_assets(manifest_dir: Path) -> None:
+def resolve_or_seed_default_assets(manifest_dir: Path, manifest_path: Optional[Path] = None) -> None:
     """
     Ensures default test assets (`assets/shot01_first.png`, `assets/shot01_last.png`) exist
-    by copying from Experiment 03/05's verified 1344x768 first/last frames if not yet present.
+    only when the manifest explicitly references them (e.g. `sample_single_manifest.json`).
     """
+    if manifest_path is not None and manifest_path.exists():
+        raw_text = manifest_path.read_text(encoding="utf-8", errors="ignore")
+        if "shot01_first.png" not in raw_text and "shot01_last.png" not in raw_text:
+            return
+    elif manifest_dir.resolve() != _SCRIPT_DIR.resolve():
+        return
+
     assets_dir = manifest_dir / "assets"
     assets_dir.mkdir(parents=True, exist_ok=True)
     exp03_out = REPO_ROOT / "experiments" / "03-g4-sol-attn-pareto-ablation" / "outputs"
@@ -89,7 +96,7 @@ def analyze_and_pack_batch(
     output_tar_path: Path,
 ) -> Dict[str, Any]:
     manifest_dir = manifest_path.parent
-    resolve_or_seed_default_assets(manifest_dir)
+    resolve_or_seed_default_assets(manifest_dir, manifest_path=manifest_path)
     manifest = BatchManifest.from_json_file(manifest_path)
 
     shot_map = {s.shot_id: s for s in manifest.storyboards}

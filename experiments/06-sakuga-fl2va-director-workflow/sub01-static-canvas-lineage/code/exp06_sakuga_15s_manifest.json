@@ -1,0 +1,75 @@
+{
+  "project": "exp06_sakuga_fight_15s",
+  "batch_id": "exp06_ufotable_sakuga_4shots_20jobs",
+  "title": "Experiment 06 飞碟社风格 15s 雷炎神庙剑戟战 (同源关键帧链 A->B->C + 跨机位蒙太奇 D->E->F, 4 分镜 × 5 Seeds = 20 任务)",
+  "aspect_ratio": "16:9",
+  "quality": "768p",
+  "duration_sec": 5.0,
+  "fps": 24,
+  "steps": 8,
+  "cfg": 1.0,
+  "resize_mode": "cover",
+  "storyboards": [
+    {
+      "shot_id": "shot_01_thunder_dash",
+      "title": "分镜 1 (链式 A->B, 生成 3.75s -> 精剪 3.50s)：低角度拔刀蓄力破空雷光冲刺",
+      "duration_sec": 4.0,
+      "prompt": "[0.00s] <Picture 1> is fully referenced as the starting frame in the crumbling stone temple at night. High-speed 2D anime sakuga in Ufotable studio aesthetic, crisp hand-drawn ink lines, cel-shaded hard shadows, zero blurry pixels. The camera [Tracking shot] with large amplitude at fast speed following the silver-haired swordsman as he explodes forward from his low crouch; stone floor tiles shatter under his boots and jagged ribbons of glowing cyan lightning smear frames trail behind his katana as he closes the gap in an instant, lunging right in front of the crimson-armored warrior who raises his flaming greatsword to block. At the final frames, the scene resolves into <Picture 2>. Audio: sharp supersonic air-tearing dash whoosh, shattering stone floor crunch, and high-voltage crackling electric thunder.",
+      "negative_prompt": "3D CGI, realistic photography, blurry pixels, slow motion tai chi, static background, deformed limbs, extra fingers, morphing face",
+      "first_frame": "assets/frame_A_standoff.png",
+      "last_frame": "assets/frame_B_thunder_dash.png"
+    },
+    {
+      "shot_id": "shot_02_blade_clash_shockwave",
+      "title": "分镜 2 (链式 B->C 无缝接力, 生成 5.17s -> 精剪 4.20s)：双刃十字架死与雷火环形气浪爆发",
+      "duration_sec": 5.0,
+      "prompt": "[0.00s] <Picture 1> is fully referenced as the direct continuation of the previous lunge. Masterpiece 2D anime sakuga action, Ufotable volumetric particle lighting. The camera [Arc shot] with medium amplitude at fast speed and then [Shake strongly] as the silver-haired swordsman's cyan lightning katana and the armored rival's crimson flame greatsword slam violently together dead-center in an X-shaped blade lock. High-contrast black-and-white impact frames flash on contact, followed by a spherical white-hot shockwave ring that fractures the temple floor and blasts glowing blue electric sparks and red fire embers outward. At the final frames, the scene resolves into <Picture 2>. Audio: deafening high-pitched metallic katana clang, thunderous sub-bass shockwave boom, roaring fire burst, and crackling lightning arcs.",
+      "negative_prompt": "3D CGI, realistic photography, blurry pixels, slow motion tai chi, static background, deformed limbs, extra fingers, morphing face",
+      "first_frame": "assets/frame_B_thunder_dash.png",
+      "last_frame": "assets/frame_C_blade_clash.png"
+    },
+    {
+      "shot_id": "shot_03_eye_awakening_slash",
+      "title": "分镜 3 (跨机位蒙太奇 D->E, 生成 3.04s -> 精剪 2.50s)：剑士瞳孔雷光骤缩特写与横斩化龙",
+      "duration_sec": 3.0,
+      "prompt": "[0.00s] <Picture 1> is fully referenced as the starting extreme close-up frame. High-octane 2D anime sakuga key animation, crisp ink linework, intense glowing neon rim light. The camera [Zoom in] with small amplitude at fast speed onto the silver-haired swordsman's fierce eyes as cyan lightning reflections flare inside his pupils and high-voltage white-blue plasma overloads his horizontal katana blade, then [Pan right] with large amplitude at fast speed as he pivots and unleashes a full-force horizontal slash that births the roaring head of a translucent azure lightning dragon from the blade arc. At the final frames, the scene resolves into <Picture 2>. Audio: tense heartbeat pulse, rising high-frequency electric capacitor whine, sharp blade ring, and a ferocious thunder-dragon roar.",
+      "negative_prompt": "3D CGI, realistic photography, blurry pixels, slow motion tai chi, static background, deformed limbs, extra fingers, morphing face",
+      "first_frame": "assets/frame_D_eye_closeup.png",
+      "last_frame": "assets/frame_E_dragon_slash.png"
+    },
+    {
+      "shot_id": "shot_04_dragon_finale_blast",
+      "title": "分镜 4 (链式 E->F 终章爆发, 生成 5.17s -> 精剪 4.80s)：黑白闪帧切入与苍蓝雷龙贯穿神庙光柱",
+      "duration_sec": 5.0,
+      "prompt": "[0.00s] <Picture 1> is fully referenced as the direct continuation of the horizontal dragon slash. Epic theatrical 2D anime sakuga finale in Ufotable style, dynamic smear frames and volumetric particle cascades. The camera [Pull out] with large amplitude at fast speed and [Shake strongly] as the colossal azure lightning dragon surges across the temple, completely devouring the crimson flame blast, shattering massive stone pillars into zero-gravity floating debris, and erupting skyward into a towering pillar of cyan and gold light. At the final frames, the scene resolves into <Picture 2>. Audio: earth-shattering sub-bass energy explosion, roaring thunder-dragon surge, crumbling stone pillar avalanche, and echoing high-voltage resonance.",
+      "negative_prompt": "3D CGI, realistic photography, blurry pixels, slow motion tai chi, static background, deformed limbs, extra fingers, morphing face",
+      "first_frame": "assets/frame_E_dragon_slash.png",
+      "last_frame": "assets/frame_F_dragon_finale.png"
+    }
+  ],
+  "jobs": [
+    {"job_id": "job_01_shot01_seed42",   "shot_id": "shot_01_thunder_dash",          "seed": 42,   "note": "Shot 1 (A->B) Seed 42"},
+    {"job_id": "job_02_shot01_seed108",  "shot_id": "shot_01_thunder_dash",          "seed": 108,  "note": "Shot 1 (A->B) Seed 108 (0.0s 缓存复用)"},
+    {"job_id": "job_03_shot01_seed777",  "shot_id": "shot_01_thunder_dash",          "seed": 777,  "note": "Shot 1 (A->B) Seed 777 (0.0s 缓存复用)"},
+    {"job_id": "job_04_shot01_seed1337", "shot_id": "shot_01_thunder_dash",          "seed": 1337, "note": "Shot 1 (A->B) Seed 1337 (0.0s 缓存复用)"},
+    {"job_id": "job_05_shot01_seed2026", "shot_id": "shot_01_thunder_dash",          "seed": 2026, "note": "Shot 1 (A->B) Seed 2026 (0.0s 缓存复用)"},
+
+    {"job_id": "job_06_shot02_seed42",   "shot_id": "shot_02_blade_clash_shockwave", "seed": 42,   "note": "Shot 2 (B->C) Seed 42"},
+    {"job_id": "job_07_shot02_seed108",  "shot_id": "shot_02_blade_clash_shockwave", "seed": 108,  "note": "Shot 2 (B->C) Seed 108 (0.0s 缓存复用)"},
+    {"job_id": "job_08_shot02_seed777",  "shot_id": "shot_02_blade_clash_shockwave", "seed": 777,  "note": "Shot 2 (B->C) Seed 777 (0.0s 缓存复用)"},
+    {"job_id": "job_09_shot02_seed1337", "shot_id": "shot_02_blade_clash_shockwave", "seed": 1337, "note": "Shot 2 (B->C) Seed 1337 (0.0s 缓存复用)"},
+    {"job_id": "job_10_shot02_seed2026", "shot_id": "shot_02_blade_clash_shockwave", "seed": 2026, "note": "Shot 2 (B->C) Seed 2026 (0.0s 缓存复用)"},
+
+    {"job_id": "job_11_shot03_seed42",   "shot_id": "shot_03_eye_awakening_slash",   "seed": 42,   "note": "Shot 3 (D->E) Seed 42"},
+    {"job_id": "job_12_shot03_seed108",  "shot_id": "shot_03_eye_awakening_slash",   "seed": 108,  "note": "Shot 3 (D->E) Seed 108 (0.0s 缓存复用)"},
+    {"job_id": "job_13_shot03_seed777",  "shot_id": "shot_03_eye_awakening_slash",   "seed": 777,  "note": "Shot 3 (D->E) Seed 777 (0.0s 缓存复用)"},
+    {"job_id": "job_14_shot03_seed1337", "shot_id": "shot_03_eye_awakening_slash",   "seed": 1337, "note": "Shot 3 (D->E) Seed 1337 (0.0s 缓存复用)"},
+    {"job_id": "job_15_shot03_seed2026", "shot_id": "shot_03_eye_awakening_slash",   "seed": 2026, "note": "Shot 3 (D->E) Seed 2026 (0.0s 缓存复用)"},
+
+    {"job_id": "job_16_shot04_seed42",   "shot_id": "shot_04_dragon_finale_blast",   "seed": 42,   "note": "Shot 4 (E->F) Seed 42"},
+    {"job_id": "job_17_shot04_seed108",  "shot_id": "shot_04_dragon_finale_blast",   "seed": 108,  "note": "Shot 4 (E->F) Seed 108 (0.0s 缓存复用)"},
+    {"job_id": "job_18_shot04_seed777",  "shot_id": "shot_04_dragon_finale_blast",   "seed": 777,  "note": "Shot 4 (E->F) Seed 777 (0.0s 缓存复用)"},
+    {"job_id": "job_19_shot04_seed1337", "shot_id": "shot_04_dragon_finale_blast",   "seed": 1337, "note": "Shot 4 (E->F) Seed 1337 (0.0s 缓存复用)"},
+    {"job_id": "job_20_shot04_seed2026", "shot_id": "shot_04_dragon_finale_blast",   "seed": 2026, "note": "Shot 4 (E->F) Seed 2026 (0.0s 缓存复用)"}
+  ]
+}

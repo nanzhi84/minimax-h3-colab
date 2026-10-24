@@ -263,7 +263,7 @@ def snapshot_manifest_into_batch_dir(
     into `<batch_dir>/assets/` so `<batch_dir>/manifest.json` is 100% self-contained.
     """
     src_dir = source_manifest_path.parent
-    resolve_or_seed_default_assets(src_dir)
+    resolve_or_seed_default_assets(src_dir, manifest_path=source_manifest_path)
     raw = json.loads(source_manifest_path.read_text(encoding="utf-8"))
     raw["project"] = project_name
     raw["batch_seq"] = batch_seq
