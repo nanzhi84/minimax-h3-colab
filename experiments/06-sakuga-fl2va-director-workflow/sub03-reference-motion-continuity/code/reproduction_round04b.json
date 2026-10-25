@@ -1,0 +1,150 @@
+{
+  "round": "round04b",
+  "title": "第4b批：月夜收束爆发与红叶转场前段逐拍对齐短镜链（f270-f570，11镜×39帧×双种子）",
+  "hypothesis": "覆盖f285月前侧颜大特写、圆环水花坠落、屋脊冲刺蓝白爆闪，以及红叶长廊推镜、握柄拔刀、扬袖回眸与俯身地面光痕。",
+  "shots": [
+    {
+      "id": "m11_burst_to_closeup",
+      "title": "月夜11：白光散开、满月前黑发侧颜极近景 (f270->f285)",
+      "first": 270,
+      "last": 285,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, as the blinding radial white sword burst of Picture 1 parts and clears, the view transitions directly into an extreme close-up of the swordswoman's side profile silhouetted against the giant glowing full moon. The camera pushes in with small amplitude as her long black hair and warm golden sparks stream across the left of her face in the night wind, settling into the exact close-up profile and moon background established by Picture 2 at the end of the shot.",
+      "soundscape": "The bright impact ring fades into close rushing wind and the soft whip of long hair and silk."
+    },
+    {
+      "id": "m12_closeup_to_moon_halo",
+      "title": "月夜12：侧颜急拉远、满月中心水环剪影 (f285->f300)",
+      "first": 285,
+      "last": 300,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, starting from the extreme close-up of the swordswoman's profile and wind-blown black hair against the full moon in Picture 1, she extends her sword arm and leaps backward into the open night sky. The camera pulls out with large amplitude at fast speed until her full-body silhouette is centered over the full moon inside a swirling circular cyan-and-gold water halo, landing on the exact centered moon-ring composition established by Picture 2 at the end of the shot.",
+      "soundscape": "A rapid whoosh of air accompanies the fast camera pullback, followed by a swirling ring of water and wind."
+    },
+    {
+      "id": "m13_halo_drop_to_roof",
+      "title": "月夜13：月心水环俯冲、落向白柱旁倾斜黑瓦屋面 (f300->f330)",
+      "first": 300,
+      "last": 330,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, from the airborne silhouette inside the circular water halo over the moon in Picture 1, the swordswoman plunges vertically downward in a sharp light streak onto the tilted dark reflective rooftop. The camera tilts down and pulls out at fast speed as she lands in a low rightward slide beside a tall white vertical column on the left with the full moon shining in the upper-right sky, matching the exact rooftop landing composition established by Picture 2 at the end of the shot.",
+      "soundscape": "A sharp vertical drop flash and wind rush resolve into a crisp landing and sliding footsteps on roof tiles."
+    },
+    {
+      "id": "m14_roof_spark_glide",
+      "title": "月夜14：沿倾斜黑瓦屋面向满月疾滑流火 (f330->f360)",
+      "first": 330,
+      "last": 360,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, starting from the low rightward slide on the tilted dark rooftop in Picture 1, the swordswoman accelerates smoothly up the reflective roof slope toward the bright full moon. The camera tracks right along the tilted roof line as the white column passes out of frame on the left and a bright trail of golden-orange sparks and pale water mist streams behind her gliding feet, arriving at the exact moonlit roof-glide composition established by Picture 2 at the end of the shot.",
+      "soundscape": "Continuous high-speed sliding across smooth roof tiles, crackling golden sparks, and steady night wind."
+    },
+    {
+      "id": "m15_white_deck_charge",
+      "title": "月夜15：衣摆掠镜、素白平台与白柱前低机位疾冲 (f360->f390)",
+      "first": 360,
+      "last": 390,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, continuing the rapid rightward roof glide from Picture 1, dark hair and robe fabric whip past the foreground and reveal a wide low-angle tracking view across a bright white-lit rooftop platform backed by tall plain white vertical slabs. The camera tracks right at fast speed as the swordswoman charges low in front of the glowing moon with golden sparks trailing left and her silver blade held horizontally right, settling into the exact low-angle rooftop composition established by Picture 2 at the end of the shot.",
+      "soundscape": "A close fabric whip transitions into fast low-angle sliding footsteps and a tense metallic blade hum."
+    },
+    {
+      "id": "m16_charge_to_radial_impact",
+      "title": "月夜16：逼近蓄力挥剑、蓝白放射水刃大爆发 (f390->f420)",
+      "first": 390,
+      "last": 420,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, from the low-angle charge across the white-lit rooftop in Picture 1, the camera pushes in rapidly toward the swordswoman as she winds her silver sword across her torso with trailing golden embers and unleashes a massive diagonal slash. Blue-white water and light explode radially outward from her blade across the right half of the frame while her dark figure and golden sparks anchor the left, converging into the exact radial burst composition established by Picture 2 at the end of the shot.",
+      "soundscape": "Rushing footsteps and a gathering water roar erupt into a massive, resonant sword-and-water explosion."
+    },
+    {
+      "id": "m17_radial_impact_to_end",
+      "title": "月夜17：放射水刃贯满全屏、斜向白光斩击收束 (f420->f438)",
+      "first": 420,
+      "last": 438,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, starting from the blue-white radial sword burst in Picture 1, the swordswoman drives her blade all the way through the diagonal strike as the radial water-and-light plumes surge outward. The camera pushes in with small amplitude at fast speed as a blazing diagonal white sword beam cuts from lower-left to upper-right across the surging cyan-white spray, reaching the exact peak slash composition established by Picture 2 at the end of the shot.",
+      "soundscape": "The roaring water burst peaks in a sharp, crystalline diagonal blade flash that echoes into silence."
+    },
+    {
+      "id": "a01_moongate_back_poise",
+      "title": "红叶01：月门红叶背影、扬袖起剑弧 (f452->f484)",
+      "first": 452,
+      "last": 484,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, a medium-wide back view begins with the long-haired swordswoman in flowing ivory-gold robes standing before the glowing full moon gate and warm red maple trees established by Picture 1. The camera pushes in with small amplitude at slow speed as she raises her right arm and slender silver sword, drawing a soft white crescent light arc on the right of the moon while her layered silk skirts sway gently, arriving at the exact raised-sleeve back composition established by Picture 2 at the end of the shot.",
+      "soundscape": "A gentle courtyard breeze rustles red maple leaves as layered silk sleeves rise with a soft, airy sword swish."
+    },
+    {
+      "id": "a02_maple_profile_turn",
+      "title": "红叶02：推进近景、红叶暖光下回眸侧颜 (f484->f510)",
+      "first": 484,
+      "last": 510,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, from the moonlit back view with the raised sleeve in Picture 1, the ivory-robed swordswoman lowers her arm smoothly and turns her shoulders and head toward the left in warm golden-red maple light. The camera pushes in to a medium close-up as her long black hair and flowing ivory silk sleeve sweep across her back into the poised side-profile composition established by Picture 2 at the end of the shot.",
+      "soundscape": "Soft silk slides over her shoulders while red maple leaves drift quietly through the warm night air."
+    },
+    {
+      "id": "a03_profile_to_floor_blade",
+      "title": "红叶03：侧颜拂袖、镜头下移至木地板斜指发光剑锋 (f510->f540)",
+      "first": 510,
+      "last": 540,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, starting from the medium close-up profile of the swordswoman in Picture 1, she pivots her waist and sweeps her flowing ivory robe hem while lowering her glowing white sword diagonally toward the wooden floor. The camera tilts down and pushes in toward the floor as red maple leaves drift past the foreground, settling into the low close-up of the glowing diagonal sword blade, trailing ivory skirt, and wooden planks established by Picture 2 at the end of the shot.",
+      "soundscape": "A light pivoting step on wood and sweeping silk lead into the crisp metallic hum of the blade tip approaching the floor."
+    },
+    {
+      "id": "a04_floor_v_light_trail",
+      "title": "红叶04：低机位木地板、剑尖横掠画出V形白光轨 (f540->f570)",
+      "first": 540,
+      "last": 570,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, beginning in the low close-up of the glowing sword blade angled to the left on the wooden floor in Picture 1, the dancer steps her ivory robe hem to the left while sweeping the sword tip rapidly across the wooden planks to the right. The camera holds a low close-up framing as the moving blade carves a sharp V-shaped glowing white light trail across the right side of the floor among fallen red maple leaves, matching the exact composition established by Picture 2 at the end of the shot.",
+      "soundscape": "The sword tip glides across wooden planks with a bright metallic ring while silk skirts brush softly to the side."
+    }
+  ]
+}

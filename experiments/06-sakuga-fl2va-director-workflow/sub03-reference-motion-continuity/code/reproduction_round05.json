@@ -1,0 +1,137 @@
+{
+  "round": "round05",
+  "title": "第5批：红叶剑舞中后段逐拍对齐短镜链（f570-f866，10镜×39帧×双种子）",
+  "hypothesis": "覆盖地面V字剑光、举剑转身、俯拍旋斩、仰拍满月挥砍、斜角月前白弧与红叶漩涡圆环收尾。",
+  "shots": [
+    {
+      "id": "a05_floor_to_overhead_lift",
+      "title": "红叶05：剑尖自地面挑起、镜头上摇至举剑过顶近景 (f570->f600)",
+      "first": 570,
+      "last": 600,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, from the low close-up of the glowing V-shaped sword trail on the wooden floor in Picture 1, the swordswoman lifts the silver blade upward in a graceful rising arc. The camera tilts up with the rising sword and frames a medium close-up of her upper body and side profile as she raises her right hand and sword high above her head with her long black hair and ivory sleeve trailing, reaching the exact overhead-lift composition established by Picture 2 at the end of the shot.",
+      "soundscape": "A rising sword swish lifts from the wooden floor, accompanied by flowing silk sleeves and rustling maple leaves."
+    },
+    {
+      "id": "a06_overhead_to_crescent_sweep",
+      "title": "红叶06：举剑拉远、全身回旋挥出下弧青白剑光 (f600->f630)",
+      "first": 600,
+      "last": 630,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, starting from the medium close-up overhead sword lift in Picture 1, the swordswoman turns her torso to face the courtyard and sweeps the silver blade downward through a wide circular arc. The camera pulls out with large amplitude to a full-body view as her ivory robe flares across the wooden deck and the blade traces a bright blue-white crescent arc across her lower front, landing on the exact full-body crescent composition established by Picture 2 at the end of the shot.",
+      "soundscape": "A light step on the wooden deck and a broad, clean sword swish sweep through drifting red maple leaves."
+    },
+    {
+      "id": "a07_high_angle_deck_spin",
+      "title": "红叶07：机位升起俯拍木台、旋身左侧白色剑弧 (f630->f660)",
+      "first": 630,
+      "last": 660,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, from the full-body crescent sword sweep in Picture 1, the swordswoman continues her clockwise spin across the leaf-strewn wooden courtyard deck. The camera pedestals up and tilts down into a high-angle view looking down at the deck as her flowing ivory skirts spiral outward and her sword carves a bright white crescent arc on the left side of the deck, converging into the exact high-angle spin composition established by Picture 2 at the end of the shot.",
+      "soundscape": "Soft spinning footsteps on wood, flaring silk skirts, and a crisp low sword swish stir the fallen maple leaves."
+    },
+    {
+      "id": "a08_deck_spin_to_moon_slash",
+      "title": "红叶08：俯拍旋身扫叶、上摇至枫枝满月前竖斩 (f660->f690)",
+      "first": 660,
+      "last": 690,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, starting from the high-angle deck spin in Picture 1, the swordswoman sweeps a low circle of red maple leaves around her skirt and rises into an upright vertical sword slash. The camera pedestals down and tilts up through the red maple branches to reveal the bright full moon on the right behind her vertical silver blade arc, matching the exact moonlit courtyard composition established by Picture 2 at the end of the shot.",
+      "soundscape": "Swirling maple leaves rustle across the deck as the camera rises with a clear upward blade swish."
+    },
+    {
+      "id": "a09_moon_slash_to_left_lunge",
+      "title": "红叶09：满月竖斩接白衣旋柱、倾斜木台左向弓步挥剑 (f690->f720)",
+      "first": 690,
+      "last": 720,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, from the vertical sword arc beside the full moon in Picture 1, the swordswoman spins rapidly like a flowing ivory pillar and steps into a dynamic leftward lunge across the tilted wooden courtyard deck. The camera rolls slightly and tracks her movement as red maple leaves stream around her extended arm and trailing white skirts, settling into the exact leftward lunge composition established by Picture 2 at the end of the shot.",
+      "soundscape": "Rapid turning footsteps on wood and snapping ivory silk lead into a sweeping breeze of red maple leaves."
+    },
+    {
+      "id": "a10_lunge_to_upward_crescent",
+      "title": "红叶10：左向弓步回身、倾斜近景满月前上挑白月牙剑光 (f720->f750)",
+      "first": 720,
+      "last": 750,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, starting from the wide leftward lunge on the courtyard deck in Picture 1, the swordswoman pivots her shoulders and drives an upward crescent sword slash toward the full moon. The camera pushes in and rolls into a dynamic Dutch angle as a bright glowing white crescent blade arc sweeps directly in front of the full moon framed by dark maple branches, arriving at the exact tilted close composition established by Picture 2 at the end of the shot.",
+      "soundscape": "A swift pivot on the wooden deck builds into a bright, resonant upward sword swish and rushing wind."
+    },
+    {
+      "id": "a11_crescent_to_leaf_ring",
+      "title": "红叶11：满月剑弧化作漫天红叶圆环、镜头拉远 (f750->f780)",
+      "first": 750,
+      "last": 780,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, from the tilted upward white crescent slash in front of the moon in Picture 1, the swordswoman opens her arms in a graceful turn as the air set in motion by her blade gathers thousands of glowing red maple leaves into a grand circular vortex ring around her and the full moon. The camera pulls out smoothly to reveal her silhouette dancing inside the luminous red leaf ring, matching the exact circular composition established by Picture 2 at the end of the shot.",
+      "soundscape": "The sword swish expands into a broad, swirling wind as a circular stream of red maple leaves rustles around the dancer."
+    },
+    {
+      "id": "a12_leaf_ring_rotation",
+      "title": "红叶12：满月红叶圆环持续回旋、镜头平稳后退 (f780->f810)",
+      "first": 780,
+      "last": 810,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, beginning with the swordswoman framed inside the glowing circular red maple-leaf ring and full moon of Picture 1, she continues her fluid turning sword phrase at the center while her ivory sleeves trail softly. The camera pulls out with small amplitude at slow speed as the circular ring of red maple leaves rotates smoothly around the moon and courtyard reflections below, settling into the exact wide leaf-ring composition established by Picture 2 at the end of the shot.",
+      "soundscape": "A continuous, gentle wind carries the circular rustle of rotating maple leaves and soft silk movement."
+    },
+    {
+      "id": "a13_ring_to_canopy_petals",
+      "title": "红叶13：退入近景枫叶丛、中心蓝白花瓣散落 (f810->f840)",
+      "first": 810,
+      "last": 840,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, starting from the wide circular red maple-leaf ring around the dancer and moon in Picture 1, the camera pulls out further backward through the surrounding maple branches. Warm red maple leaves close in around the outer frame while glowing blue-white petals and moonlit reflections scatter at the center, converging into the exact canopy-framed composition established by Picture 2 at the end of the shot.",
+      "soundscape": "The swirling breeze softens as close maple branches and leaves brush past the retreating viewpoint."
+    },
+    {
+      "id": "a14_canopy_to_foreground_bokeh",
+      "title": "红叶14：近景柔焦红叶拂过镜头收尾 (f840->f866)",
+      "first": 840,
+      "last": 866,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, from the canopy view of red maple leaves and central blue-white petals in Picture 1, the camera continues pulling out slowly through dense autumn foliage. Large, warm, soft-focus red maple leaves drift across the immediate foreground and gradually fill the frame with gentle bokeh while only a faint glimmer of pale light remains at the center, reaching the exact soft foreground-leaf composition established by Picture 2 at the end of the shot.",
+      "soundscape": "Close maple leaves rustle softly across the lens as the night breeze gradually quiets."
+    }
+  ]
+}

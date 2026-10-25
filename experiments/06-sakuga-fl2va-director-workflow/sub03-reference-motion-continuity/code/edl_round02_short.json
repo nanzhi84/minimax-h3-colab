@@ -1,0 +1,18 @@
+{
+  "name": "round02_short_chain",
+  "description": "十个短窗口的动作路线版；仅确定性选帧，非首段去除共享首帧，不假设速度或加速度自动连续。",
+  "parts": [
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_02_moon_01_dash_leap_seed777", "target_frames": 72},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_04_moon_02_water_landing_seed777", "start_frame": 1, "target_frames": 72},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_06_moon_03_rise_sweep_seed777", "start_frame": 1, "target_frames": 72},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_08_moon_04_pass_and_glide_seed777", "start_frame": 1, "target_frames": 72},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_10_moon_05_final_burst_seed777", "start_frame": 1, "target_frames": 70},
+    {"black": true, "target_frames": 3},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_11_autumn_01_push_to_blade_seed42", "target_frames": 70},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_13_autumn_02_blade_to_turn_seed42", "start_frame": 1, "target_frames": 71},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_15_autumn_03_connected_spin_seed42", "start_frame": 1, "target_frames": 71},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_18_autumn_04_leaf_ring_seed777", "start_frame": 1, "target_frames": 71},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_20_autumn_05_foreground_leaves_seed777", "start_frame": 1, "target_frames": 55},
+    {"black": true, "target_frames": 17}
+  ]
+}

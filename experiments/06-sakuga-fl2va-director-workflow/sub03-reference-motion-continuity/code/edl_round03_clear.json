@@ -1,0 +1,30 @@
+{
+  "name": "round03_clear_end",
+  "description": "清晰尾帧工作流失败对照：月夜先生成清晰屋面尾帧再接爆发，长片中段仍出现重复图案；红叶沿用第三批时序长镜头。",
+  "parts": [
+    {
+      "batch": "outputs/reproduction/batches/exp06_sub03_round03/1",
+      "job_id": "job_05_moon_long_clear_end_seed42",
+      "target_frames": 320
+    },
+    {
+      "batch": "outputs/reproduction/batches/exp06_sub03_round03/1",
+      "job_id": "job_07_moon_clear_end_final_burst_seed42",
+      "start_frame": 1,
+      "target_frames": 38
+    },
+    {
+      "black": true,
+      "target_frames": 3
+    },
+    {
+      "batch": "outputs/reproduction/batches/exp06_sub03_round03/1",
+      "job_id": "job_03_autumn_long_timed_camera_seed42",
+      "target_frames": 338
+    },
+    {
+      "black": true,
+      "target_frames": 17
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "round": "round02",
+  "title": "子实验3：真实关键帧链、逐段动作与镜头路径复现",
+  "hypothesis": "根据首批场景漂移和镜头路线遗漏，增加实际中间条件并精简场景语义；在两个相同窗口比较73帧与124帧后期压缩。",
+  "shots": [
+    {
+      "id": "moon_01_dash_leap", "title": "月夜01：起势、沿屋面冲刺、回旋腾跃",
+      "first": 0, "last": 90, "num_frames": 73, "seeds": [42, 777],
+      "description": "The solitary sword wielder in Picture 1 leans into a fast rightward glide across the reflective dark rooftop, plants one foot, and turns the body and blade through one continuous circular sweep into the airborne pose of Picture 2. Long layered cloth and hair stream behind the torso and follow the turn with a short delay. The camera tracks right with the figure, then rises slightly with the leap. The visible environment remains the huge full moon, open deep-blue night sky, smooth dark roof and plain pale vertical slabs already visible in the two pictures. A thin warm trail follows the robe while a cool pale-blue arc follows the sword. The movement progresses through the entire shot and lands directly on the ending airborne composition.",
+      "soundscape": "One sliding footstep, rushing wind, flowing cloth, a continuous blade swish and a light splash."
+    },
+    {
+      "id": "moon_02_water_landing", "title": "月夜02：空中转身、贴面下落、水浪沿屋顶展开",
+      "first": 90, "last": 180, "num_frames": 73, "seeds": [42, 777],
+      "description": "From the airborne position in Picture 1, the same solitary figure turns the sword downward and sweeps along a curved descending path beside the plain pale vertical slabs. A sheet of silvery water follows the blade and spreads into a curling wave as the figure settles into a low glide along the roof toward Picture 2. The camera tilts down and tracks the descent, keeping the moon and dark sky as the background. The long garment wraps around the rotating torso, then streams backward as the feet approach the roof. Preserve one connected body trajectory from the leap through the landing and water sweep.",
+      "soundscape": "Wind falling past cloth, one soft landing and a broad rushing water sweep."
+    },
+    {
+      "id": "moon_03_rise_sweep", "title": "月夜03：水浪前滑、借势腾起、刀弧掠过近景",
+      "first": 180, "last": 270, "num_frames": 73, "seeds": [42, 777],
+      "description": "The sword wielder glides forward from Picture 1 beside the curling water sheet, compresses the legs and springs upward along the plain white vertical slabs. The camera follows upward and curves with the body's turn until the blade and water arc sweep close to the lens in Picture 2. The moon remains the distant landmark and the roof drops away beneath the ascent. The torso initiates the turn, the sword draws a clean continuous arc, and trailing hair and long cloth follow afterward. Blue-white spray grows naturally from the blade path and brightens as it reaches the foreground at the ending composition.",
+      "soundscape": "A sliding step and launch, rising wind, cloth snapping and a close water-edged sword swish."
+    },
+    {
+      "id": "moon_04_pass_and_glide", "title": "月夜04：近景剑浪掠过、回到屋面横向疾行",
+      "first": 270, "last": 360, "num_frames": 73, "seeds": [42, 777],
+      "description": "Continue the same sword stroke from the bright near-lens water arc in Picture 1. The sword wielder passes the lens along the curve, descends onto the reflective roof and extends the movement into a rapid rightward glide. The camera swings into a low lateral tracking view and reveals the huge moon above the same roof line, reaching the composition in Picture 2. The bright spray clears behind the moving figure; long dark cloth and a narrow warm wake trail the torso. Keep the plain pale slabs, open sky and roof coherent while the action changes from close pass to lateral travel.",
+      "soundscape": "A close rushing swish that recedes, a soft roof contact and wind streaming behind the moving cloth."
+    },
+    {
+      "id": "moon_05_final_burst", "title": "月夜05：持续冲刺、挥剑汇水、最后爆发",
+      "first": 360, "last": 435, "num_frames": 73, "seeds": [42, 777],
+      "description": "From Picture 1, the same figure keeps sliding rapidly along the dark reflective roof toward the right, with the full moon and plain pale slab passing behind. The figure draws the sword across the body, rotates the shoulders into a final diagonal cut and sends a concentrated blue-white water blade outward. The camera tracks the moving torso and follows the strike into the bright radial spray established in Picture 2. The robe and hair continue along the previous direction before being pulled into the final turn. Build the brightness with the sword stroke so the end burst is the result of the visible movement.",
+      "soundscape": "A fast sliding footstep, a gathering water rush and one strong sword-and-water burst at the final cut."
+    },
+    {
+      "id": "autumn_01_push_to_blade", "title": "红叶01：背身起舞、镜头沿衣摆降至剑锋",
+      "first": 452, "last": 540, "num_frames": 73, "seeds": [42, 777],
+      "description": "The ivory-robed sword dancer in Picture 1 begins a gentle connected turn and lowers the blade along the side of the flowing robe. The camera pushes closer and lowers with the blade, moving from the moonlit full-body view to the close low view of cloth, sword tip and wooden floor in Picture 2. Her shoulders turn first and her sleeves and hair follow in overlapping motion. Warm red maple leaves drift through the existing scene and pass softly through the near foreground. Keep the same garment and silver blade recognizable as the framing moves downward.",
+      "soundscape": "A light pivoting footstep, fabric sliding through the air, one quiet sword swish and softly rustling leaves."
+    },
+    {
+      "id": "autumn_02_blade_to_turn", "title": "红叶02：剑尖带动抬镜、全身转向与横扫",
+      "first": 540, "last": 630, "num_frames": 73, "seeds": [42, 777],
+      "description": "Starting at the close low blade-and-robe view in Picture 1, the dancer lifts the sword in one rising arc as her hips and shoulders turn together. The camera tilts upward with the sword and eases backward, revealing her upper body and then the open turning pose of Picture 2. Her free arm extends for balance; the wrist guides the silver blade through the curve and the long sleeves and hair trail the body. Preserve the warm maple light and the same clothing while the camera moves from the sword tip into a readable full-body dance sweep.",
+      "soundscape": "A light turning step, a rising blade swish, soft layered cloth movement and maple leaves drifting in the breeze."
+    },
+    {
+      "id": "autumn_03_connected_spin", "title": "红叶03：延续剑势、肩髋连续转身、叶片绕身",
+      "first": 630, "last": 720, "num_frames": 73, "seeds": [42, 777],
+      "description": "The sword dancer continues the sweep already in progress in Picture 1, steps through the turn and lets the sword travel around her body in one flowing arc into Picture 2. The hips lead, followed by the shoulders, arm and blade; long sleeves and hair catch up afterward and continue through the change of direction. The camera arcs gently with her turn and keeps her body visible against the existing maple courtyard. Red leaves follow the air moved by the blade, gradually tracing a wider curved stream around the dancer. Maintain the same direction and momentum across the whole movement.",
+      "soundscape": "Soft turning footsteps, a connected sword swish, layered cloth flutter and red leaves rustling around the dancer."
+    },
+    {
+      "id": "autumn_04_leaf_ring", "title": "红叶04：舞剑带起环形叶流、镜头后退展示月与人",
+      "first": 720, "last": 810, "num_frames": 73, "seeds": [42, 777],
+      "description": "The dancer in Picture 1 completes a rising sword circle, turns through the center of the maple-leaf stream and opens her free arm while her robe spirals behind. The camera pulls back and rolls gently with the composition, revealing the broad circular flow of warm red leaves around her against the moon as in Picture 2. The leaf ring grows from the ongoing curved movement of the body and sword. Keep the dancer identifiable inside the ring while foreground leaves and the floor provide depth during the gradual reveal.",
+      "soundscape": "A sweeping blade swish, a widening rush of wind, flowing fabric and a broad circular rustle of maple leaves."
+    },
+    {
+      "id": "autumn_05_foreground_leaves", "title": "红叶05：环形构图后退、近景枫叶掠过镜头",
+      "first": 810, "last": 864, "num_frames": 56, "seeds": [42, 777],
+      "description": "The camera continues easing backward from the dancer and circular maple-leaf flow in Picture 1. She continues the same soft turning sword phrase in the distance while the long robe and hair trail the motion. Near red maple leaves drift across the lens from the side and grow larger in the foreground until they fill the soft warm framing of Picture 2. The moon and dancer recede naturally behind the passing leaves. Maintain continuous depth and gentle backward camera travel through the ending foreground occlusion.",
+      "soundscape": "A soft continuing breeze, distant cloth and sword movement, and close maple leaves brushing past the viewpoint."
+    },
+    {
+      "id": "moon_01_dash_leap_124", "title": "时长对照：月夜01同条件124帧",
+      "first": 0, "last": 90, "num_frames": 124, "seeds": [42, 777],
+      "description": "The solitary sword wielder in Picture 1 leans into a fast rightward glide across the reflective dark rooftop, plants one foot, and turns the body and blade through one continuous circular sweep into the airborne pose of Picture 2. Long layered cloth and hair stream behind the torso and follow the turn with a short delay. The camera tracks right with the figure, then rises slightly with the leap. The visible environment remains the huge full moon, open deep-blue night sky, smooth dark roof and plain pale vertical slabs already visible in the two pictures. A thin warm trail follows the robe while a cool pale-blue arc follows the sword. The movement progresses through the entire shot and lands directly on the ending airborne composition.",
+      "soundscape": "One sliding footstep, rushing wind, flowing cloth, a continuous blade swish and a light splash."
+    },
+    {
+      "id": "autumn_02_blade_to_turn_124", "title": "时长对照：红叶02同条件124帧",
+      "first": 540, "last": 630, "num_frames": 124, "seeds": [42, 777],
+      "description": "Starting at the close low blade-and-robe view in Picture 1, the dancer lifts the sword in one rising arc as her hips and shoulders turn together. The camera tilts upward with the sword and eases backward, revealing her upper body and then the open turning pose of Picture 2. Her free arm extends for balance; the wrist guides the silver blade through the curve and the long sleeves and hair trail the body. Preserve the warm maple light and the same clothing while the camera moves from the sword tip into a readable full-body dance sweep.",
+      "soundscape": "A light turning step, a rising blade swish, soft layered cloth movement and maple leaves drifting in the breeze."
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "round": "round03",
+  "title": "子实验3：保留长镜头连贯性，修正场景语义与尾帧信息量",
+  "hypothesis": "根据首批场景漂移：同首尾/同Seed只修订月夜场景语义；红叶增加具体镜头时序；另比较清晰尾帧加短爆发尾段的长镜头工作流。所有主权重、8steps和Run12保持不变。",
+  "shots": [
+    {
+      "id": "moon_long_scene_rewrite",
+      "title": "长镜头语义对照：保持首尾帧与动作，改为素白结构和开阔夜空",
+      "first": 0,
+      "last": 435,
+      "num_frames": 362,
+      "seeds": [
+        42,
+        108
+      ],
+      "description": "A single continuous cinematic nighttime action shot preserves the black-haired swordswoman, dark flowing robe, silver sword, huge full moon, reflective rooftop and plain rigid pale vertical slabs established in Picture 1. She begins poised, accelerates into a low rightward dash, then pivots through one sweeping sword circle and leaps upward. The camera tracks her momentum, tilts up with her ascent, and follows her curving descent as a pale blue crescent and a curling sheet of water trace her sword path. Her long hair and robe trail behind the torso with delayed follow-through. She lands into a second forward glide, gathers the water into one powerful diagonal slash, and drives the bright blue-white burst into the final composition in Picture 2. Keep her body, grip and sword connected throughout; sustain forward progress between actions and let changes in framing follow her movement. The spatial landmarks stay the huge moon, open deep-blue sky, smooth dark rooftop and plain pale slabs, with the moon remaining visible during the camera travel.",
+      "soundscape": "Wind across a rooftop, sliding footsteps, cloth snaps, distinct sword swishes and rushing water. A deep water-and-sword impact coincides with the final burst."
+    },
+    {
+      "id": "autumn_long_timed_camera",
+      "title": "红叶长镜头时序对照：明确推近剑锋、抬升和后退的阶段",
+      "first": 452,
+      "last": 840,
+      "num_frames": 345,
+      "seeds": [
+        42,
+        108
+      ],
+      "description": "One continuous cinematic shot preserves the long-haired swordswoman in flowing ivory-gold robes, her slender silver sword, the moon gate, warm courtyard and red maple trees established in Picture 1. She takes a measured step and begins a graceful connected sword dance. The camera glides closer behind her shoulder, follows the sword down toward the floor, then rises with her raised arm and widens as she turns through flowing full-body sweeps. Her hips lead each turn, then her shoulders and sword follow; her sleeves, hair and layered robe continue moving after each change of direction. Red leaves are caught by the sweeping air and gather into a broad ring around her. The camera eases backward to reveal the glowing leaf circle against the moon, then moves past near maple leaves into the framing of Picture 2. Maintain a single readable dance phrase with natural acceleration, soft transitions and overlapping cloth motion. Camera timing within this continuous shot: the opening two seconds approach the robe from the back view; by about four seconds the framing is a close low view of the sword tip, robe and wooden floor; by about seven seconds the camera has tilted up with the raised sword and revealed the turning torso; from about eight to eleven seconds it pulls back to the full-body dance and growing leaf circle; the final seconds pass through the near maple leaves into Picture 2.",
+      "soundscape": "Light footfalls on wood, soft fabric movement, clean sword swishes, a flowing breeze and maple leaves rustling around the dancer."
+    },
+    {
+      "id": "moon_long_clear_end",
+      "title": "清晰尾帧对照：月夜动作先收在13.33秒清晰屋面姿态",
+      "first": 0,
+      "last": 400,
+      "num_frames": 328,
+      "seeds": [
+        42,
+        108
+      ],
+      "description": "One continuous cinematic nighttime shot preserves the solitary long-haired sword wielder, flowing dark layered garment, full moon, smooth reflective rooftop and plain pale vertical slabs of Picture 1. The figure accelerates to screen right, pivots through one sweeping blade arc, leaps upward beside the pale slabs and curves back toward the roof with a thin water crescent following the sword. The camera tracks the figure, rises with the leap and follows the descent into a low rightward glide. Hair and cloth lag the body turns and keep flowing between movements. The sequence ends with the figure still gliding along the roof beside the pale vertical slab in the clear composition of Picture 2. The visible space stays the open moonlit sky, dark roof and plain pale structures throughout the camera travel.",
+      "soundscape": "Sliding footsteps, wind and flowing cloth, connected sword swishes, a brief landing and water rushing along the blade."
+    },
+    {
+      "id": "moon_clear_end_final_burst",
+      "title": "月夜尾段：清晰屋面姿态接最终水光爆发",
+      "first": 400,
+      "last": 435,
+      "num_frames": 56,
+      "seeds": [
+        42,
+        108
+      ],
+      "description": "From the clear low roof-glide position in Picture 1, the same sword wielder continues moving forward, brings the blade across the torso and releases one forceful diagonal sword sweep. The long robe and hair trail the moving shoulders. The camera travels with the figure toward the bright blue-white water blade and radial spray of Picture 2. Build the spray from the visible sword motion while the pale slab and dark roof remain spatially coherent until the final burst.",
+      "soundscape": "One fast roof slide, cloth snapping, a close sword swish and one concentrated water-and-sword impact."
+    }
+  ]
+}

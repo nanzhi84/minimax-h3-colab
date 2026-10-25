@@ -1,0 +1,137 @@
+{
+  "round": "round04a",
+  "title": "第4a批：月夜剑舞前段逐拍对齐短镜链（f000-f270，10镜×39帧×双种子）",
+  "hypothesis": "将前段月夜高速水花斩、360度火环、横跃圆环、巨幅白幡腾空与跃升拆分为10个39帧（1.625s）短窗口，单包体积<14MB确保0-CU预上传稳定。",
+  "shots": [
+    {
+      "id": "m01_poise_to_gather",
+      "title": "月夜01：满月剪影蓄势、衣摆流火起手 (f000->f030)",
+      "first": 0,
+      "last": 30,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, a medium-wide shot begins with the black-haired swordswoman in the dark silhouette and glowing golden-fire robe hem established by Picture 1 in front of the huge full moon on a dark reflective rooftop. The camera holds a static shot as she lowers her center of gravity slightly, shifts her weight toward screen right, and steadies the horizontal silver sword pointing right while the dark layered robe and golden embers billow outward in the night wind, settling into the poised pre-dash stance and composition established by Picture 2 at the end of the shot.",
+      "soundscape": "Night wind rushes softly across the rooftop while layered cloth flutters and warm embers crackle faintly along the hem."
+    },
+    {
+      "id": "m02_column_water_slash",
+      "title": "月夜02：右向疾冲、破水横斩白柱 (f030->f060)",
+      "first": 30,
+      "last": 60,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, the black-haired swordswoman begins in the poised moonlit rooftop stance of Picture 1 and bursts into a fast low rightward dash across the dark reflective roof. The camera tracks right with large amplitude at fast speed as a bright golden-orange fire wake trails her flowing dark robe, and she drives a horizontal cyan-white sword beam through a bursting white water splash beside the pale vertical column, landing on the exact slicing pose and splash framing established by Picture 2 at the end of the shot.",
+      "soundscape": "A sharp sliding footstep accelerates into rushing wind, followed by a crisp horizontal sword slash and a forceful burst of water."
+    },
+    {
+      "id": "m03_slash_to_fire_ring",
+      "title": "月夜03：破水收剑、屋面旋身金焰圆环 (f060->f075)",
+      "first": 60,
+      "last": 75,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, starting from the low rightward water-splitting sword slash in Picture 1, the swordswoman plants her leading foot on the dark rooftop and pivots her hips and shoulders into a rapid full-circle spin. The camera tracks right with small amplitude at fast speed as her sweeping robe and blade whip a broad 360-degree circular ring of blazing golden-orange fire around her body on the roof, converging into the exact circular fire-ring composition established by Picture 2 at the end of the shot.",
+      "soundscape": "Water spray scatters as a pivoting footstep scrapes the roof, accompanied by a whipping cloth snap and a roaring circular whoosh of golden flame."
+    },
+    {
+      "id": "m04_fire_ring_to_leap",
+      "title": "月夜04：金环借力、向满月右侧腾跃挥剑 (f075->f090)",
+      "first": 75,
+      "last": 90,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, from the center of the blazing circular golden-orange fire ring on the rooftop in Picture 1, the swordswoman springs powerfully upward and to screen right into the night sky. The camera tilts up and tracks right at fast speed as the golden fire trail stretches diagonally behind her ascending dark robe and her blade carves a glowing cyan-blue crescent arc to the right of the huge full moon, reaching the exact airborne pose and composition established by Picture 2 at the end of the shot.",
+      "soundscape": "A forceful rooftop launch leads into rising wind, trailing flame crackles, and a sharp upward sword swish."
+    },
+    {
+      "id": "m05_leap_to_moon_ring",
+      "title": "月夜05：掠过满月、俯视旋转青白月弧环 (f090->f120)",
+      "first": 90,
+      "last": 120,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, starting from the upward leap beside the full moon in Picture 1, the swordswoman arcs across the face of the glowing moon and rotates her body into a mid-air spin. The camera rolls counterclockwise with large amplitude at fast speed as a luminous cyan-white crescent water ring expands in a full circle around her silhouette and the moon with a pale slanted vertical banner entering on the left, settling into the exact circular moon-ring composition established by Picture 2 at the end of the shot.",
+      "soundscape": "High-altitude wind swirls around fluttering dark fabric as a resonant cyan water-and-blade ring hums through the night air."
+    },
+    {
+      "id": "m06_banners_float",
+      "title": "月夜06：月环拉开、双白幡间腾空回旋 (f120->f150)",
+      "first": 120,
+      "last": 150,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, beginning in the circular cyan-white moon ring of Picture 1, the airborne swordswoman rises toward the upper center of the frame while her dark robe and golden embers trail beneath her. The camera pulls out with small amplitude as two colossal slanted white vertical banners frame the left and lower-right space and twin glowing cyan-white rings ripple across the banner and full moon below, matching the exact aerial composition established by Picture 2 at the end of the shot.",
+      "soundscape": "Swirling wind and fluttering robes echo between tall banners while shimmering water rings chime softly."
+    },
+    {
+      "id": "m07_wave_roof_dive",
+      "title": "月夜07：空降斜斩、屋面巨浪翻涌 (f150->f180)",
+      "first": 150,
+      "last": 180,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, from the high airborne position between the pale vertical banners in Picture 1, the swordswoman dives downward along a bright cyan-white diagonal blade streak onto the tilted dark rooftop. The camera tilts down and tracks right at fast speed as she lands in a low sliding stance with golden sparks at her feet while a massive white-crested ocean wave surges up along the slanted roof behind her, arriving at the exact wave-and-rooftop composition established by Picture 2 at the end of the shot.",
+      "soundscape": "A fast descending blade whoosh strikes the roof, immediately followed by a thunderous cresting ocean wave and sliding footsteps."
+    },
+    {
+      "id": "m08_four_banners_ascent",
+      "title": "月夜08：巨浪掠过、四道巨型白幡前冲天腾跃 (f180->f212)",
+      "first": 180,
+      "last": 212,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, starting from the low slide beneath the cresting white wave on the tilted roof in Picture 1, the wave sweeps across the frame and the swordswoman launches upward into a vast vertical space dominated by four colossal plain white vertical banners. The camera tilts up and pulls out at fast speed as she ascends on the left with a glowing white halo ring and cyan trail beneath her against the four white banners, landing on the exact architectural composition established by Picture 2 at the end of the shot.",
+      "soundscape": "Crashing wave spray gives way to a powerful upward launch, rushing wind, and a ringing cyan sword trail."
+    },
+    {
+      "id": "m09_banner_top_slash",
+      "title": "月夜09：沿四白幡拔高、幡顶迎月横斩 (f212->f240)",
+      "first": 212,
+      "last": 240,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, from the mid-air ascent in front of the four colossal white vertical banners in Picture 1, the swordswoman continues rising toward the top of the pale banners while rotating her torso into a horizontal slash. The camera tilts up and tracks right as the huge full moon appears beside the rightmost white banner and her blade carves a crisp cyan-white slash at the banner top, converging into the exact upper-banner composition established by Picture 2 at the end of the shot.",
+      "soundscape": "Rising wind rushes past tall fabric banners as her robe snaps and the silver blade cuts a sharp high-altitude swish."
+    },
+    {
+      "id": "m10_moon_radial_burst",
+      "title": "月夜10：幡顶掠月、满屏放射白光斩击爆发 (f240->f270)",
+      "first": 240,
+      "last": 270,
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "description": "3D CG, cinematic, starting from the high slash beside the white banner and full moon in Picture 1, the swordswoman propels herself directly across the face of the moon with a curling cyan-white water ring and drives her sword straight toward the lens. The camera pushes in at fast speed as her strike erupts into a blinding full-screen radial white-and-cyan light burst centered on the moon and blade line, reaching the exact radial impact composition established by Picture 2 at the end of the shot.",
+      "soundscape": "A gathering water-and-wind rush culminates in a piercing sword impact and a resonant radial burst of light."
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "round": "round06",
+  "title": "第6批：高误差窗口亚拍加密与提示词精修补抽（11镜×39帧×双种子）",
+  "hypothesis": "针对DP诊断中MAE最高的6个窗口（m04、m05、m10、m11、m13、m15），增补f106满月正中跃姿、f255满月左上圆环、f276屋脊剪影、f314白光垂直俯冲、f376近景横斩5个亚拍锚点并修正m04/m11提示词，彻底消除局部特效偏差。",
+  "shots": [
+    {
+      "id": "m04_fire_ring_to_leap",
+      "title": "火环低姿收束与满月左入横跃（075-090精修）",
+      "first": 75,
+      "last": 90,
+      "num_frames": 39,
+      "seeds": [108, 256],
+      "description": "The camera pans right and tilts slightly up from a low-angle rooftop view into a low-angle night-sky framing as the giant full moon enters on the left. At 0.00s, the dark-haired swordswoman in flowing white robes spins low on the wet dark rooftop inside a horizontal golden-orange fire ring. From 0.00s to 0.90s, she stays low on the dark roof as the horizontal golden ring tightens around her waist without shooting any vertical flame column into the sky. From 0.90s to 1.62s, she springs diagonally up-right across the right side of the giant full moon, trailing warm golden sparks below her hem and a short cyan sword arc on the right at 1.62s. High-speed 2D/3D hybrid sakuga animation, clean dark night sky.",
+      "soundscape": "Sweeping golden ember whoosh on the roof, crisp cloth snap, and an airy upward leap with a sharp blade hum."
+    },
+    {
+      "id": "m05a_moon_silhouette_leap",
+      "title": "满月正中剪影腾跃与右弧起手（090-106）",
+      "first": 90,
+      "last": 106,
+      "num_frames": 39,
+      "seeds": [42, 777],
+      "description": "The camera tracks upward and left in a low-angle medium-wide shot centering on the giant glowing full moon against a clean dark navy night sky. At 0.00s, the swordswoman leaps up-right to the right of the full moon with a short cyan blade arc. From 0.00s to 1.62s, she arcs smoothly up-left right across the bright face of the full moon as a crisp dark silhouette with flowing black hair and white robes, carving a single clean crescent sword light along the upper-right rim of the moon at 1.62s without any green vortex ring.",
+      "soundscape": "Airy high-altitude wind rush, silk robes fluttering, and a crisp silver blade crescent chime."
+    },
+    {
+      "id": "m05b_moon_crescent_ring",
+      "title": "满月剪影旋身化满月青白圆环（106-120）",
+      "first": 106,
+      "last": 120,
+      "num_frames": 39,
+      "seeds": [42, 777],
+      "description": "The camera transitions into an overhead top-down view centered on the glowing full moon. At 0.00s, the swordswoman floats in front of the full moon with a bright crescent arc on the upper right. From 0.00s to 1.62s, she spins 360 degrees in mid-air across the center of the moon, sweeping her sword to expand the crescent into a complete concentric cyan-and-white circular halo ring framing the full moon at 1.62s.",
+      "soundscape": "Resonant circular sword ring hum, swirling night wind, and shimmering water-light acoustics."
+    },
+    {
+      "id": "m10a_banner_to_moon_orb",
+      "title": "白幡坠落与满月左上白环腾旋（240-255）",
+      "first": 240,
+      "last": 255,
+      "num_frames": 39,
+      "seeds": [42, 777],
+      "description": "The camera pans right toward the glowing full moon in a medium-wide night-sky view as the white banner on the left drops away. At 0.00s, the swordswoman slashes horizontally at the top edge of the white banner with the full moon on the right. From 0.00s to 1.62s, the white cloth falls out of frame on the left while she curls into a tight airborne spin at the upper-left edge of the full moon, tracing a clean thin cyan-white circular ring around herself and a small white water ring below at 1.62s.",
+      "soundscape": "Tearing cloth flutter, brisk night wind, and a tight circular blade whoosh."
+    },
+    {
+      "id": "m10b_moon_orb_to_burst",
+      "title": "满月左上圆环掠顶化放射白光爆闪（255-270）",
+      "first": 255,
+      "last": 270,
+      "num_frames": 39,
+      "seeds": [42, 777],
+      "description": "The camera holds a centered medium-wide view of the glowing full moon in the dark night sky. At 0.00s, the swordswoman spins inside a thin cyan-white ring at the upper-left of the full moon. From 0.00s to 1.10s, she arcs clockwise over the top of the full moon as a vertical white light line rises from the bottom center toward the moon. From 1.10s to 1.62s, her downward strike hits the lower-right edge of the moon, erupting into a blinding full-screen radial white speed-line burst at 1.62s.",
+      "soundscape": "High-pitched energy charge culminating in a thunderous white radial sword burst."
+    },
+    {
+      "id": "m11a_burst_to_roof_peak",
+      "title": "放射白光收束至屋脊满月剪影（270-276）",
+      "first": 270,
+      "last": 276,
+      "num_frames": 39,
+      "seeds": [42, 777],
+      "description": "The camera holds a low-angle view looking up along the sharp dark roof ridge toward the giant full moon. At 0.00s, a bright radial white burst fills the frame in front of the moon. From 0.00s to 1.62s, the blinding radial white rays rapidly clear and contract, revealing the dark silhouette of the swordswoman poised atop the pointed roof ridge in front of the full moon with her sword extended horizontally to the right and warm golden sparks trailing on the left at 1.62s.",
+      "soundscape": "Dissipating energy flash resonance and a crisp wind gust across the roof ridge."
+    },
+    {
+      "id": "m11b_roof_peak_to_closeup",
+      "title": "屋脊满月剪影急推月前纯净侧颜大特写（276-285）",
+      "first": 276,
+      "last": 285,
+      "num_frames": 39,
+      "seeds": [42, 777],
+      "description": "The camera executes an ultra-fast snap zoom-in from a medium-wide low-angle shot atop the roof ridge into an extreme close-up side profile against the giant full moon. At 0.00s, the swordswoman stands silhouetted in front of the full moon atop the roof peak. From 0.00s to 1.62s, the camera rushes straight into an extreme close-up of her calm dark silhouetted right side profile, lowered eyelashes, and wind-swept black hair strands streaming to the left against the massive silver-white full moon at 1.62s, with pure cool moonlight and no orange fire on her face.",
+      "soundscape": "Sudden quiet wind rush and soft hair and silk fluttering in cool moonlight."
+    },
+    {
+      "id": "m13a_halo_to_white_plunge",
+      "first": 300,
+      "last": 314,
+      "title": "满月水环悬停化全屏白光垂直俯冲（300-314）",
+      "num_frames": 39,
+      "seeds": [42, 777],
+      "description": "The camera holds a centered view of the full moon before whipping downward with a blinding radial speed-line flash. At 0.00s, the swordswoman floats centered over the full moon inside a circular cyan-white water halo. From 0.00s to 0.90s, the circular water halo tightens around her silhouette. From 0.90s to 1.62s, she plunges straight downward as bright white radial impact speed-lines and a vertical cyan blade beam fill the entire screen around her diving silhouette at 1.62s.",
+      "soundscape": "Swirling water halo resonance snapping into a supersonic vertical dive boom."
+    },
+    {
+      "id": "m13b_white_plunge_to_roof",
+      "title": "全屏白光俯冲落定倾斜黑瓦屋面（314-330）",
+      "first": 314,
+      "last": 330,
+      "num_frames": 39,
+      "seeds": [42, 777],
+      "description": "The camera tilts down from a vertical plunge into a wide Dutch-angle view of a dark wet tiled roof with a vertical white column on the left and the full moon on the upper right. At 0.00s, the swordswoman dives downward through bright white radial speed-lines and a vertical cyan beam. From 0.00s to 1.62s, the white flash clears as she lands in a low crouch on the tilted dark roof beside the white column, sending a white water splash across the tiles while the full moon shines calmly in the upper-right sky at 1.62s.",
+      "soundscape": "Heavy downward water impact splash settling into a low sliding landing on wet roof tiles."
+    },
+    {
+      "id": "m15a_roof_to_close_slash",
+      "title": "黑瓦滑行突进至近景黑发横斩（360-376）",
+      "first": 360,
+      "last": 376,
+      "num_frames": 39,
+      "seeds": [42, 777],
+      "description": "The camera pushes in rapidly from a wide Dutch-angle rooftop view into a dynamic close-up action slash. At 0.00s, the swordswoman glides up-right across the dark tilted roof in front of the full moon trailing golden sparks. From 0.00s to 1.62s, she lunges straight toward the camera and swings a horizontal cyan-white sword slash from right to left across the lower frame as her dark wind-swept hair streams across the upper frame in close-up at 1.62s.",
+      "soundscape": "Accelerating footwork rush and a razor-sharp close-up horizontal sword slash."
+    },
+    {
+      "id": "m15b_close_slash_to_white_deck",
+      "title": "近景黑发横斩落定白光屋面蓄势（376-390）",
+      "first": 376,
+      "last": 390,
+      "num_frames": 39,
+      "seeds": [42, 777],
+      "description": "The camera pulls back from a close-up horizontal blade slash into a wide low-angle view of a bright white-lit rooftop deck with vertical white columns on the right and a low moon at center. At 0.00s, her flowing black hair and horizontal cyan-white blade slash fill the close-up frame. From 0.00s to 1.62s, the bright cyan-white slash sweeps open across the floor, revealing the swordswoman landing at center in front of the low moon on the glowing white rooftop deck with golden embers at her left hem and her sword extended to the right at 1.62s.",
+      "soundscape": "Sweeping blade resonance echoing across the rooftop and a crisp landing slide."
+    }
+  ]
+}

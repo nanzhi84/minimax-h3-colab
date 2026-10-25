@@ -1,0 +1,10 @@
+{
+  "name": "round01_long_baseline",
+  "description": "首批两段长镜头基线；月夜场景漂移，保留为失败对照，不视为最终视觉通过。",
+  "parts": [
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round01/1", "job_id": "job_01_lunar_long_seed42", "target_frames": 358},
+    {"black": true, "target_frames": 3},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round01/1", "job_id": "job_04_autumn_long_seed108", "target_frames": 338},
+    {"black": true, "target_frames": 17}
+  ]
+}

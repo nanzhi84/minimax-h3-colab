@@ -1,0 +1,18 @@
+{
+  "name": "round02_long_window_retimed",
+  "description": "与短窗口版选片和成片时间相同；仅月夜第一窗、红叶第二窗换成同首尾同Seed的124帧候选并压缩至相同输出帧数。",
+  "parts": [
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_22_moon_01_dash_leap_124_seed777", "target_frames": 72},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_04_moon_02_water_landing_seed777", "start_frame": 1, "target_frames": 72},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_06_moon_03_rise_sweep_seed777", "start_frame": 1, "target_frames": 72},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_08_moon_04_pass_and_glide_seed777", "start_frame": 1, "target_frames": 72},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_10_moon_05_final_burst_seed777", "start_frame": 1, "target_frames": 70},
+    {"black": true, "target_frames": 3},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_11_autumn_01_push_to_blade_seed42", "target_frames": 70},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_23_autumn_02_blade_to_turn_124_seed42", "start_frame": 1, "target_frames": 71},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_15_autumn_03_connected_spin_seed42", "start_frame": 1, "target_frames": 71},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_18_autumn_04_leaf_ring_seed777", "start_frame": 1, "target_frames": 71},
+    {"batch": "outputs/reproduction/batches/exp06_sub03_round02/1", "job_id": "job_20_autumn_05_foreground_leaves_seed777", "start_frame": 1, "target_frames": 55},
+    {"black": true, "target_frames": 17}
+  ]
+}

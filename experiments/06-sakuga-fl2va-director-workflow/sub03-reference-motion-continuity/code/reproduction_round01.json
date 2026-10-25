@@ -1,0 +1,42 @@
+{
+  "round": "round01",
+  "title": "子实验3：真实首尾帧复现校准，长镜头与短动作窗口",
+  "hypothesis": "先验证接近15秒的完整动作能否成立，再比较更短的同源动作窗口；8-step Run 12与原始首尾图条件保持固定。",
+  "shots": [
+    {
+      "id": "lunar_long",
+      "title": "月夜长镜头：冲刺、转身、腾跃、水浪与最终斩击",
+      "first": 0, "last": 435, "num_frames": 362, "seeds": [42, 108],
+      "description": "A single continuous cinematic wuxia action shot preserves the black-haired swordswoman, dark flowing robe, silver sword, huge full moon, reflective rooftop and tall white banners established in Picture 1. She begins poised, accelerates into a low rightward dash, then pivots through one sweeping sword circle and leaps upward. The camera tracks her momentum, tilts up with her ascent, and follows her curving descent as a pale blue crescent and a curling sheet of water trace her sword path. Her long hair and robe trail behind the torso with delayed follow-through. She lands into a second forward glide, gathers the water into one powerful diagonal slash, and drives the bright blue-white burst into the final composition in Picture 2. Keep her body, grip and sword connected throughout; sustain forward progress between actions and let changes in framing follow her movement.",
+      "soundscape": "Wind across a rooftop, sliding footsteps, cloth snaps, distinct sword swishes and rushing water. A deep water-and-sword impact coincides with the final burst."
+    },
+    {
+      "id": "autumn_long",
+      "title": "红叶长镜头：连贯舞剑、衣摆跟随、环形叶流与前景遮挡",
+      "first": 452, "last": 840, "num_frames": 345, "seeds": [42, 108],
+      "description": "One continuous cinematic shot preserves the long-haired swordswoman in flowing ivory-gold robes, her slender silver sword, the moon gate, warm courtyard and red maple trees established in Picture 1. She takes a measured step and begins a graceful connected sword dance. The camera glides closer behind her shoulder, follows the sword down toward the floor, then rises with her raised arm and widens as she turns through flowing full-body sweeps. Her hips lead each turn, then her shoulders and sword follow; her sleeves, hair and layered robe continue moving after each change of direction. Red leaves are caught by the sweeping air and gather into a broad ring around her. The camera eases backward to reveal the glowing leaf circle against the moon, then moves past near maple leaves into the framing of Picture 2. Maintain a single readable dance phrase with natural acceleration, soft transitions and overlapping cloth motion.",
+      "soundscape": "Light footfalls on wood, soft fabric movement, clean sword swishes, a flowing breeze and maple leaves rustling around the dancer."
+    },
+    {
+      "id": "lunar_dash_short",
+      "title": "月夜短窗口：右向滑步冲刺接转身刀弧",
+      "first": 30, "last": 90, "num_frames": 56, "seeds": [42, 777],
+      "description": "In a continuous moonlit wuxia action shot, the swordswoman in Picture 1 drives her weight forward into a fast low dash to screen right. Her bent leading knee absorbs the sliding step, her sword remains firmly in her hand, and her robe and hair stream behind her. She plants the foot, turns her hips and shoulders into a sweeping sword arc, then springs upward into the airborne position in Picture 2. The camera tracks right at her speed and tilts upward with her leap. The full moon remains a stable background landmark while the foreground rooftop and white banner pass rapidly. A thin blue-white water trail follows the blade and curls after her turn.",
+      "soundscape": "A sharp sliding step, wind rushing past cloth, one connected sword swish and a light burst of water."
+    },
+    {
+      "id": "lunar_orbit_short",
+      "title": "月夜短窗口：水浪斜掠、腾跃与绕月回旋",
+      "first": 135, "last": 255, "num_frames": 107, "seeds": [42, 777],
+      "description": "The swordswoman in Picture 1 completes her descending sword circle, lands in a low forward glide along the slanted rooftop, and lets a curling blue-white water sheet roll past her blade. She compresses her legs and launches upward beside the tall white banners, rotating her torso into a connected aerial sword sweep until she reaches the airborne composition in Picture 2. The camera follows the dive, then cranes up and arcs smoothly with her ascent. Her sword, arms and shoulders remain connected; robe and hair lag each directional change. The huge moon and banners establish a coherent courtyard while water and light trace the same physical route as her sword.",
+      "soundscape": "Rushing water, a soft landing followed by a stronger launch, continuous wind and a clear aerial blade swish."
+    },
+    {
+      "id": "autumn_dance_short",
+      "title": "红叶短窗口：肩髋带剑、连续转身与衣摆拖尾",
+      "first": 594, "last": 684, "num_frames": 73, "seeds": [42, 777],
+      "description": "In one continuous full-body sword-dance movement, the swordswoman in Picture 1 shifts her weight onto her leading foot, lets her hips initiate a fluid turn, and draws the silver sword through a broad curved sweep. Her shoulders and wrist guide the blade through the arc while her free arm opens for balance. Her long sleeves, hair and robe follow a fraction later, continuing smoothly as the torso changes direction. The camera arcs gently around her and pulls back slightly, keeping her body readable against the warm maple courtyard and moon gate. A delicate stream of red leaves follows the sword-driven breeze as the movement resolves into Picture 2.",
+      "soundscape": "One light pivoting footstep, a clean sword swish, soft fabric flutter and red leaves rustling in a gentle courtyard wind."
+    }
+  ]
+}

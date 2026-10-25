@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "source": {
+    "url": "https://www.douyin.com/video/7664781155287239972",
+    "author": "wuy0uer",
+    "captured_date": "2026-10-24",
+    "caption": "AI新人求指导 能不能用两张图骗点赞呢。#aigc #古风",
+    "visible_author_reply": "已经有人跟我吐槽了，还是要抽卡的",
+    "author_reply_note": "省略表情；只记录可见作者回复，不把网友猜测当成制作事实。",
+    "model_and_workflow": "未证实；两张图不等于一组首尾帧。",
+    "download_method": "内置浏览器当前可见 video 元素的 downloadMedia；未导出登录态或签名地址。"
+  },
+  "clips": [
+    {
+      "id": "reference",
+      "title": "wuy0uer 参考片",
+      "path": "outputs/reference/wuy0uer_7664781155287239972.mp4",
+      "sha256": "ffde3a774c44e3a0f1e5e58dafd32148c3966e4ee2ad76d3b122882ccac42208",
+      "expected_frames": 895,
+      "expected_fps": 30,
+      "boundaries": [{"frame": 452, "kind": "黑场后进入第二段；不是同一动作的无缝接力"}],
+      "chapters": [
+        [0, "起势与横向掠行"], [1.5, "转身与刀锋弧线"],
+        [8.5, "近景回身与衣摆"], [14.5, "冲击、黑场、换段"],
+        [18.5, "剑尖引导转身"], [23, "身体、衣摆与叶片的连续回旋"]
+      ]
+    },
+    {
+      "id": "sub01",
+      "title": "子实验 1 实际成片",
+      "path": "../sub01-static-canvas-lineage/outputs/director_master_15s.mp4",
+      "edl": "../sub01-static-canvas-lineage/outputs/director_edit_decision_list.json",
+      "expected_frames": 360,
+      "expected_fps": 24,
+      "chapters": [[1.5, "观察姿态停留与特效运动"], [3.25, "B 接缝前后"], [10, "E 接缝与人工闪帧"]]
+    },
+    {
+      "id": "sub02",
+      "title": "子实验 2 实际成片",
+      "path": "../sub02-dynamic-perspective-parallax/outputs/sub02_director_master_15s.mp4",
+      "edl": "../sub02-dynamic-perspective-parallax/outputs/sub02_director_edit_decision_list.json",
+      "expected_frames": 360,
+      "expected_fps": 24,
+      "chapters": [[1.5, "身体停顿时画面仍在运动"], [3.25, "B 接缝前后"], [7.45, "跨景别剪辑"], [10, "E 接缝与人工闪帧"]]
+    }
+  ]
+}
