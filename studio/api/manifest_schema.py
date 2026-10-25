@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """
-Production Schema, Aspect Ratio / Resolution / Duration (17k+5) Resolver,
-and Locked ADR-03 Run 12 [S8-FullStack-Pareto] Configuration for Studio API (`studio/api/manifest_schema.py`).
+Production Schema, 2x2 BF16 Model Routing & Operator Profile Resolver (fl2va / ref2va x quality / fast),
+and Aspect Ratio / Resolution / Duration (17k+5) Resolver for Studio API (`studio/api/manifest_schema.py`).
 """
 
+import copy
 import hashlib
 import json
 import math
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
-# Strictly locked to ADR-03 Default Production Configuration: Run 12 [S8-FullStack-Pareto]
+# Legacy ADR-03 Default Production Configuration (retained for backward compatibility)
 LOCKED_RUN12_CONFIG: Dict[str, Any] = {
     "config_id": "Run 12 [S8-FullStack-Pareto]",
     "adr_ref": "ADR-03",
@@ -32,6 +33,227 @@ LOCKED_RUN12_CONFIG: Dict[str, Any] = {
     "est_marginal_cu": 0.0935,
     "desc": "前 2/8 步 SageAttention 稠密预热 + 后 6/8 步零拷贝直通 ck.sol_attn (tau=1.3, extra_tokens=256) + MiniMaxH3FusedModulation",
 }
+
+SHARED_BF16_BASE_WEIGHTS: List[Dict[str, Any]] = [
+    {
+        "role": "Text Encoder (Qwen3-VL-32B BF16)",
+        "repo_id": "Comfy-Org/MiniMax-H3",
+        "rel_path": "text_encoders/qwen3vl_32b_minimax_h3_bf16.safetensors",
+        "target_rel_path": "text_encoders/qwen3vl_32b_minimax_h3_bf16.safetensors",
+        "size": 51506295256,
+    },
+    {
+        "role": "Video VAE (FP16)",
+        "repo_id": "Comfy-Org/MiniMax-H3",
+        "rel_path": "vae/minimax_h3_video_vae_fp16.safetensors",
+        "target_rel_path": "vae/minimax_h3_video_vae_fp16.safetensors",
+        "size": 5207808496,
+    },
+    {
+        "role": "Audio VAE (FP32)",
+        "repo_id": "Comfy-Org/MiniMax-H3",
+        "rel_path": "vae/minimax_h3_audio_vae_fp32.safetensors",
+        "target_rel_path": "vae/minimax_h3_audio_vae_fp32.safetensors",
+        "size": 605254808,
+    },
+]
+
+FL2VA_BF16_DIT_WEIGHT: Dict[str, Any] = {
+    "role": "FL2VA DiT (Pruned BF16)",
+    "repo_id": "Comfy-Org/MiniMax-H3",
+    "rel_path": "diffusion_models/minimax_h3_fl2va_pruned_bf16.safetensors",
+    "target_rel_path": "diffusion_models/minimax_h3_fl2va_pruned_bf16.safetensors",
+    "size": 40225724176,
+}
+
+REF2VA_BF16_DIT_WEIGHT: Dict[str, Any] = {
+    "role": "Ref2VA DiT (Pruned BF16)",
+    "repo_id": "Comfy-Org/MiniMax-H3",
+    "rel_path": "diffusion_models/minimax_h3_ref2va_pruned_bf16.safetensors",
+    "target_rel_path": "diffusion_models/minimax_h3_ref2va_pruned_bf16.safetensors",
+    "size": 40225724176,
+}
+
+FL2VA_8STEP_LORA_WEIGHT: Dict[str, Any] = {
+    "role": "FL2VA 8-Step Turbo LoRA (BF16)",
+    "repo_id": "Comfy-Org/MiniMax-H3",
+    "rel_path": "loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors",
+    "target_rel_path": "loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors",
+    "size": 1956193000,
+}
+
+REF2VA_8STEP_LORA_WEIGHT: Dict[str, Any] = {
+    "role": "Ref2VA 8-Step Turbo LoRA (BF16)",
+    "repo_id": "lightx2v/Minimax-h3-Turbo",
+    "rel_path": "minimax_h3_ref2v_turbo_8step_v1.1_768p_comfyui_bf16.safetensors",
+    "target_rel_path": "loras/minimax_h3_ref2v_turbo_8step_v1.1_768p_comfyui_bf16.safetensors",
+    "size": 1956193000,
+}
+
+# Canonical 2x2 BF16 Model Route x Operator/Sampling Tier Matrix
+ROUTE_PROFILES_2X2: Dict[str, Dict[str, Any]] = {
+    "fl2va_bf16_quality": {
+        "config_id": "FL2VA-BF16-Quality [20-Step Native SDPA + FusedMod]",
+        "profile_id": "fl2va_bf16_quality",
+        "model_route": "fl2va",
+        "profile": "quality",
+        "precision": "bf16",
+        "unet_name": "minimax_h3_fl2va_pruned_bf16.safetensors",
+        "clip_name": "qwen3vl_32b_minimax_h3_bf16.safetensors",
+        "video_vae_name": "minimax_h3_video_vae_fp16.safetensors",
+        "audio_vae_name": "minimax_h3_audio_vae_fp32.safetensors",
+        "lora_name": None,
+        "lora_repo_id": None,
+        "default_steps": 20,
+        "sampler": "res_multistep",
+        "default_scheduler": "simple",
+        "dense_backend": "sdpa",
+        "sparse_mode": "none",
+        "start_percent": 1.0,
+        "end_percent": 1.0,
+        "tau": 0.0,
+        "extra_tokens": 0,
+        "dense_blocks": "",
+        "sink_conditioning": "exact_kv_and_rows",
+        "fused_mod": True,
+        "baseline_resolution": [1344, 768],
+        "baseline_frames": 124,
+        "est_denoise_sec": 192.0,
+        "est_vae_decode_sec": 5.2,
+        "est_e2e_sec": 197.2,
+        "est_marginal_cu": 0.3947,
+        "weights_bundle": [FL2VA_BF16_DIT_WEIGHT, *SHARED_BF16_BASE_WEIGHTS],
+        "desc": "FL2VA Pruned BF16 + 20步无LoRA + PyTorch 2.11 原生 cuDNN BF16 SDPA (100%稠密) + MiniMaxH3FusedModulation",
+    },
+    "fl2va_bf16_fast": {
+        "config_id": "FL2VA-BF16-Fast [8-Step Turbo + Run12 Sol-Attn + FusedMod]",
+        "profile_id": "fl2va_bf16_fast",
+        "model_route": "fl2va",
+        "profile": "fast",
+        "precision": "bf16",
+        "unet_name": "minimax_h3_fl2va_pruned_bf16.safetensors",
+        "clip_name": "qwen3vl_32b_minimax_h3_bf16.safetensors",
+        "video_vae_name": "minimax_h3_video_vae_fp16.safetensors",
+        "audio_vae_name": "minimax_h3_audio_vae_fp32.safetensors",
+        "lora_name": "minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors",
+        "lora_repo_id": "Comfy-Org/MiniMax-H3",
+        "default_steps": 8,
+        "sampler": "res_multistep",
+        "default_scheduler": "simple",
+        "dense_backend": "sage",
+        "sparse_mode": "ck_sol_direct",
+        "start_percent": 0.20,
+        "end_percent": 1.0,
+        "tau": 1.3,
+        "extra_tokens": 256,
+        "dense_blocks": "",
+        "sink_conditioning": "exact_kv_and_rows",
+        "fused_mod": True,
+        "baseline_resolution": [1344, 768],
+        "baseline_frames": 124,
+        "est_denoise_sec": 45.8,
+        "est_vae_decode_sec": 5.2,
+        "est_e2e_sec": 51.0,
+        "est_marginal_cu": 0.1021,
+        "weights_bundle": [FL2VA_BF16_DIT_WEIGHT, *SHARED_BF16_BASE_WEIGHTS, FL2VA_8STEP_LORA_WEIGHT],
+        "desc": "FL2VA Pruned BF16 + 8步 Turbo LoRA + 前2/8步 SageAttention + 后6/8步直通 ck.sol_attn (tau=1.3, tok=256) + MiniMaxH3FusedModulation",
+    },
+    "ref2va_bf16_quality": {
+        "config_id": "Ref2VA-BF16-Quality [20-Step Native SDPA + Beta + FusedMod]",
+        "profile_id": "ref2va_bf16_quality",
+        "model_route": "ref2va",
+        "profile": "quality",
+        "precision": "bf16",
+        "unet_name": "minimax_h3_ref2va_pruned_bf16.safetensors",
+        "clip_name": "qwen3vl_32b_minimax_h3_bf16.safetensors",
+        "video_vae_name": "minimax_h3_video_vae_fp16.safetensors",
+        "audio_vae_name": "minimax_h3_audio_vae_fp32.safetensors",
+        "lora_name": None,
+        "lora_repo_id": None,
+        "default_steps": 20,
+        "sampler": "res_multistep",
+        "default_scheduler": "beta",
+        "dense_backend": "sdpa",
+        "sparse_mode": "none",
+        "start_percent": 1.0,
+        "end_percent": 1.0,
+        "tau": 0.0,
+        "extra_tokens": 0,
+        "dense_blocks": "",
+        "sink_conditioning": "exact_kv_and_rows",
+        "fused_mod": True,
+        "baseline_resolution": [1344, 768],
+        "baseline_frames": 124,
+        "est_denoise_sec": 204.0,
+        "est_vae_decode_sec": 5.2,
+        "est_e2e_sec": 209.2,
+        "est_marginal_cu": 0.4187,
+        "weights_bundle": [REF2VA_BF16_DIT_WEIGHT, *SHARED_BF16_BASE_WEIGHTS],
+        "desc": "Ref2VA Pruned BF16 + 20步无LoRA (beta scheduler) + PyTorch 2.11 原生 cuDNN BF16 SDPA (100%稠密参考检索) + MiniMaxH3FusedModulation",
+    },
+    "ref2va_bf16_fast": {
+        "config_id": "Ref2VA-BF16-Fast [8-Step Turbo + Run09 HiFi Sol-Attn + FusedMod]",
+        "profile_id": "ref2va_bf16_fast",
+        "model_route": "ref2va",
+        "profile": "fast",
+        "precision": "bf16",
+        "unet_name": "minimax_h3_ref2va_pruned_bf16.safetensors",
+        "clip_name": "qwen3vl_32b_minimax_h3_bf16.safetensors",
+        "video_vae_name": "minimax_h3_video_vae_fp16.safetensors",
+        "audio_vae_name": "minimax_h3_audio_vae_fp32.safetensors",
+        "lora_name": "minimax_h3_ref2v_turbo_8step_v1.1_768p_comfyui_bf16.safetensors",
+        "lora_repo_id": "lightx2v/Minimax-h3-Turbo",
+        "default_steps": 8,
+        "sampler": "res_multistep",
+        "default_scheduler": "simple",
+        "dense_backend": "sage",
+        "sparse_mode": "ck_sol_direct",
+        "start_percent": 0.20,
+        "end_percent": 1.0,
+        "tau": 1.0,
+        "extra_tokens": 256,
+        "dense_blocks": "0,1,48,49",
+        "sink_conditioning": "exact_kv_and_rows",
+        "fused_mod": True,
+        "baseline_resolution": [1344, 768],
+        "baseline_frames": 124,
+        "est_denoise_sec": 52.4,
+        "est_vae_decode_sec": 5.2,
+        "est_e2e_sec": 57.6,
+        "est_marginal_cu": 0.1153,
+        "weights_bundle": [REF2VA_BF16_DIT_WEIGHT, *SHARED_BF16_BASE_WEIGHTS, REF2VA_8STEP_LORA_WEIGHT],
+        "desc": "Ref2VA Pruned BF16 + 8步 Turbo LoRA + 前2/8步与首尾层(0,1,48,49) SageAttention + 直通 ck.sol_attn (tau=1.0, tok=256) + MiniMaxH3FusedModulation",
+    },
+}
+
+
+def resolve_route_profile(model_route: str = "fl2va", profile: str = "fast") -> Dict[str, Any]:
+    """
+    Resolves `(model_route, profile)` into one of the 4 canonical 2x2 BF16 profile dicts.
+    Accepts `model_route` in `{"fl2va", "ref2va"}` and `profile` in `{"quality", "fast"}`
+    or a full profile key in `ROUTE_PROFILES_2X2`.
+    """
+    norm_route = str(model_route or "fl2va").strip().lower()
+    if norm_route not in ("fl2va", "ref2va"):
+        raise ValueError(f"Unsupported model_route '{model_route}'. Choose from: ['fl2va', 'ref2va']")
+
+    norm_prof = str(profile or "fast").strip().lower()
+    if norm_prof in ROUTE_PROFILES_2X2:
+        entry = ROUTE_PROFILES_2X2[norm_prof]
+        if entry["model_route"] != norm_route:
+            raise ValueError(
+                f"Profile '{profile}' belongs to route '{entry['model_route']}', which conflicts with model_route='{norm_route}'"
+            )
+        return copy.deepcopy(entry)
+
+    if norm_prof not in ("quality", "fast"):
+        raise ValueError(
+            f"Unsupported profile '{profile}'. Choose from: ['quality', 'fast'] or {list(ROUTE_PROFILES_2X2.keys())}"
+        )
+
+    profile_key = f"{norm_route}_bf16_{norm_prof}"
+    return copy.deepcopy(ROUTE_PROFILES_2X2[profile_key])
+
 
 # All dimensions are strict multiples of 32 (required by MiniMax H3 Video VAE & 2x2 patchify)
 ASPECT_RATIO_PRESETS: Dict[str, Dict[str, Tuple[int, int]]] = {
@@ -123,27 +345,38 @@ def estimate_tokens_and_denoise_sec(
     height: int,
     num_frames: int,
     steps: int = 8,
+    model_route: str = "fl2va",
+    profile: str = "fast",
+    num_ref_images: int = 0,
+    num_ref_videos: int = 0,
+    ref_image_size: str = "match",
 ) -> Dict[str, Any]:
     """
-    Estimates MiniMax H3 joint multimodal sequence length N and Blackwell G4 Run 12 latency.
-    Baseline: 1344x768 x 124 frames -> 1008 spatial tokens/frame, N = 42,058 tokens,
-    42.37s denoise + 4.35s VAE = 46.72s E2E.
+    Estimates MiniMax H3 joint multimodal sequence length N and Blackwell G4 latency
+    across the 2x2 BF16 routing profiles (`fl2va` / `ref2va` x `quality` / `fast`).
     """
+    prof_cfg = resolve_route_profile(model_route=model_route, profile=profile)
     spatial_tokens = (width // 32) * (height // 32)
     latent_t = ((num_frames - 5) // 17) * 5 + 2
     video_tokens = spatial_tokens * latent_t
-    prefix_tokens = 4762
+
+    if prof_cfg["model_route"] == "ref2va":
+        ref_img_mult = 2.2 if ref_image_size == "max" else 1.0
+        ref_tokens = int(round(max(1, num_ref_images) * spatial_tokens * ref_img_mult)) + num_ref_videos * spatial_tokens * 7
+        prefix_tokens = 2746 + ref_tokens
+    else:
+        prefix_tokens = 4762
     total_tokens = prefix_tokens + video_tokens
 
     base_tokens = 42058.0
     token_ratio = total_tokens / base_tokens
-    step_ratio = steps / 8.0
-    # Run 12 uses hybrid dense (25%) + block-sparse Sol-Attn (75%), scaling ~ O(N^1.45)
-    denoise_scale = (token_ratio ** 1.45) * step_ratio
+    step_ratio = steps / float(prof_cfg["default_steps"])
+    exponent = 1.85 if prof_cfg["sparse_mode"] == "none" else 1.45
+    denoise_scale = (token_ratio ** exponent) * step_ratio
     vae_scale = (width * height * num_frames) / (1344.0 * 768.0 * 124.0)
 
-    est_denoise_sec = round(42.37 * denoise_scale, 2)
-    est_vae_sec = round(4.35 * vae_scale, 2)
+    est_denoise_sec = round(float(prof_cfg["est_denoise_sec"]) * denoise_scale, 2)
+    est_vae_sec = round(float(prof_cfg["est_vae_decode_sec"]) * vae_scale, 2)
     est_e2e_sec = round(est_denoise_sec + est_vae_sec, 2)
     return {
         "spatial_tokens_per_frame": spatial_tokens,
@@ -164,6 +397,10 @@ class StoryboardShot:
     negative_prompt: str = ""
     first_frame: str = ""
     last_frame: str = ""
+    ref_images: List[str] = field(default_factory=list)
+    ref_videos: List[str] = field(default_factory=list)
+    ref_audios: List[str] = field(default_factory=list)
+    ref_image_size: str = "match"
     aspect_ratio: Optional[str] = None
     quality: Optional[str] = None
     resolution: Optional[Tuple[int, int]] = None
@@ -185,6 +422,11 @@ class BatchManifest:
     batch_id: str
     title: str
     project: str = "default"
+    model_route: str = "fl2va"
+    profile: str = "fast"
+    profile_id: str = "fl2va_bf16_fast"
+    scheduler: str = "simple"
+    inference_config: Dict[str, Any] = field(default_factory=lambda: copy.deepcopy(ROUTE_PROFILES_2X2["fl2va_bf16_fast"]))
     aspect_ratio: str = "16:9"
     quality: str = "768p"
     resolution: Tuple[int, int] = (1344, 768)
@@ -200,12 +442,40 @@ class BatchManifest:
     @classmethod
     def from_json_file(cls, path: Path) -> "BatchManifest":
         raw = json.loads(path.read_text(encoding="utf-8"))
+        raw_shots = raw.get("storyboards", [])
+        if not raw_shots:
+            raise ValueError("Manifest must contain at least one storyboard shot")
+
+        has_ref_assets = any(
+            bool(s.get("ref_images") or s.get("ref_videos") or s.get("ref_audios"))
+            for s in raw_shots
+        )
+        if "model_route" in raw and raw["model_route"] is not None:
+            raw_route = str(raw["model_route"]).strip().lower()
+        else:
+            raw_route = "ref2va" if has_ref_assets else "fl2va"
+
+        raw_profile = str(raw.get("profile", "fast")).strip().lower()
+        prof_cfg = resolve_route_profile(model_route=raw_route, profile=raw_profile)
+        model_route = prof_cfg["model_route"]
+        profile_tier = prof_cfg["profile"]
+        profile_id = prof_cfg["profile_id"]
+
         fps = int(raw.get("fps", 24))
         if fps != 24:
             raise ValueError(f"MiniMax H3 native audio-video sync requires fps=24 (got {fps})")
-        steps = int(raw.get("steps", 8))
+
+        if "steps" in raw and raw["steps"] is not None:
+            steps = int(raw["steps"])
+        else:
+            steps = int(prof_cfg["default_steps"])
         if steps < 1 or steps > 50:
-            raise ValueError(f"Invalid steps={steps}; must be in [1, 50] (default 8 for Turbo LoRA)")
+            raise ValueError(f"Invalid steps={steps}; must be in [1, 50]")
+
+        scheduler = str(raw.get("scheduler") or prof_cfg["default_scheduler"]).strip().lower()
+        if scheduler not in ("simple", "beta", "normal"):
+            raise ValueError(f"Invalid scheduler '{scheduler}'; choose from ['simple', 'beta', 'normal']")
+
         cfg = float(raw.get("cfg", 1.0))
         resize_mode = str(raw.get("resize_mode", "cover")).strip()
         if resize_mode not in ("cover", "stretch"):
@@ -230,13 +500,40 @@ class BatchManifest:
 
         shots: List[StoryboardShot] = []
         seen_shot_ids = set()
-        for s in raw.get("storyboards", []):
+        for s in raw_shots:
             sid = str(s["shot_id"]).strip()
             if not sid or sid in (".", "..") or "/" in sid or "\\" in sid:
                 raise ValueError(f"Invalid shot_id: '{sid}'")
             if sid in seen_shot_ids:
                 raise ValueError(f"Duplicate shot_id '{sid}' in manifest")
             seen_shot_ids.add(sid)
+
+            ref_images = [str(x).strip() for x in s.get("ref_images", []) if str(x).strip()]
+            ref_videos = [str(x).strip() for x in s.get("ref_videos", []) if str(x).strip()]
+            ref_audios = [str(x).strip() for x in s.get("ref_audios", []) if str(x).strip()]
+            ref_image_size = str(s.get("ref_image_size", raw.get("ref_image_size", "match"))).strip().lower()
+            if ref_image_size not in ("match", "max"):
+                raise ValueError(f"Invalid ref_image_size '{ref_image_size}' in shot '{sid}'; choose 'match' or 'max'")
+
+            if model_route == "ref2va":
+                if not (ref_images or ref_videos or ref_audios):
+                    raise ValueError(
+                        f"Shot '{sid}' under model_route='ref2va' must provide at least one reference asset "
+                        f"(ref_images, ref_videos, or ref_audios)"
+                    )
+                if len(ref_images) > 9:
+                    raise ValueError(f"Shot '{sid}' has {len(ref_images)} ref_images (maximum allowed is 9)")
+                if len(ref_videos) > 3:
+                    raise ValueError(f"Shot '{sid}' has {len(ref_videos)} ref_videos (maximum allowed is 3)")
+                if len(ref_audios) > 3:
+                    raise ValueError(f"Shot '{sid}' has {len(ref_audios)} ref_audios (maximum allowed is 3)")
+            else:
+                if ref_images or ref_videos or ref_audios:
+                    raise ValueError(
+                        f"Shot '{sid}' specifies reference assets (ref_images/ref_videos/ref_audios), "
+                        f"which are only valid when model_route='ref2va'"
+                    )
+
             s_res = tuple(s["resolution"]) if s.get("resolution") else None
             shots.append(
                 StoryboardShot(
@@ -246,6 +543,10 @@ class BatchManifest:
                     negative_prompt=s.get("negative_prompt", ""),
                     first_frame=s.get("first_frame", ""),
                     last_frame=s.get("last_frame", ""),
+                    ref_images=ref_images,
+                    ref_videos=ref_videos,
+                    ref_audios=ref_audios,
+                    ref_image_size=ref_image_size,
                     aspect_ratio=s.get("aspect_ratio"),
                     quality=s.get("quality"),
                     resolution=s_res,
@@ -253,8 +554,6 @@ class BatchManifest:
                     num_frames=s.get("num_frames"),
                 )
             )
-        if not shots:
-            raise ValueError("Manifest must contain at least one storyboard shot")
 
         jobs: List[RenderJob] = []
         seen_job_ids = set()
@@ -284,6 +583,11 @@ class BatchManifest:
             batch_id=raw.get("batch_id", f"{project}_batch"),
             title=raw.get("title", raw.get("batch_id", f"{project}_batch")),
             project=project,
+            model_route=model_route,
+            profile=profile_tier,
+            profile_id=profile_id,
+            scheduler=scheduler,
+            inference_config=prof_cfg,
             aspect_ratio=aspect_ratio,
             quality=quality,
             resolution=(int(res[0]), int(res[1])),
@@ -305,9 +609,12 @@ def compute_conditioning_hash(
     last_frame_bytes: bytes,
     resolution: Tuple[int, int] = (1344, 768),
     num_frames: int = 124,
+    model_route: str = "fl2va",
+    ref_image_size: str = "match",
+    ref_assets_bytes: Optional[Sequence[bytes]] = None,
 ) -> str:
     """
-    Computes a deterministic SHA-256 digest over all inputs to Qwen3-VL + Video VAE Encode.
+    Computes a deterministic SHA-256 digest over all inputs to Qwen3-VL + Video/Audio VAE Encode.
     Jobs sharing the same `cond_hash` reuse the pre-encoded conditioning tensors in 0.00s.
     """
     h = hashlib.sha256()
@@ -319,4 +626,10 @@ def compute_conditioning_hash(
     h.update(b"\x00")
     h.update(hashlib.sha256(first_frame_bytes).digest())
     h.update(hashlib.sha256(last_frame_bytes).digest())
+    if model_route != "fl2va" or ref_image_size != "match" or ref_assets_bytes:
+        h.update(b"\x00")
+        h.update(f"route={model_route}|ref_size={ref_image_size}".encode("utf-8"))
+        for asset_b in (ref_assets_bytes or ()):
+            h.update(b"\x00")
+            h.update(hashlib.sha256(asset_b).digest())
     return h.hexdigest()[:16]

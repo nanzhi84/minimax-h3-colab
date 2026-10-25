@@ -14,10 +14,10 @@ flowchart LR
     GDrive <--> RemoteEngine
 ```
 
-- **清单契约与几何折算层（[`studio/api/manifest_schema.py`](../../studio/api/manifest_schema.py)）**：定义 `StoryboardSpec`、`RenderJobSpec`、`BatchManifest` 数据结构，负责画幅比例/分辨率对齐、`17k+5` 帧网格吸附、SHA-256 条件哈希计算以及联合序列 Token 与耗时预估（锁定 [ADR-0003](../adr/0003-sol-attn-and-g4-pareto-frontier.md) `Run 12` 配置）。
-- **本地 0-CU 策划与预投料层（[`studio/api/local_planner.py`](../../studio/api/local_planner.py)）**：在未分配任何云端 GPU 前完成参考帧校验、跨任务 `cond_hash` 去重预分析、`input_jobs.tar` 未压缩打包，并以 `0.00 CU` 预推入 Google Drive REST API。
-- **全生命周期编排调度器（[`studio/api/colab_batch_runner.py`](../../studio/api/colab_batch_runner.py)）**：串联本地 0-CU 预投料、Colab `--gpu g4` 实例分配、远端日志流式监控、`finally` 块毫秒级 `colab stop` 停机保护、停机后 8 线程 `HTTP Range` 0-CU 并发拉取及多镜头自动拼接。
-- **云端 G4 阶段式批处理引擎（[`studio/api/remote_batch_engine.py`](../../studio/api/remote_batch_engine.py)）**：在远端 Colab G4 上执行 8 线程 HF 权重拉取与内网入向解包重叠、阶段式 `Qwen3-VL-32B` 去重预编码与立即卸载、常驻 `Run 12` 单流连续去噪（模式 P1）、后台 CPU 异步 `ffmpeg` 音画封装及机房内网极速出向卸载。
+- **清单契约与 2×2 BF16 路由层（[`studio/api/manifest_schema.py`](../../studio/api/manifest_schema.py)）**：定义 `StoryboardSpec`、`RenderJobSpec`、`BatchManifest` 与 `ROUTE_PROFILES_2X2`（`model_route` $\in \{\text{"fl2va"}, \text{"ref2va"}\} \times$ `profile` $\in \{\text{"quality"}, \text{"fast"}\}$ 共 4 套全浮点 `BF16` 预设），负责画幅比例/分辨率对齐、`17k+5` 帧网格吸附、SHA-256 条件哈希计算以及按路由/档位锁定权重清单与耗时预估。
+- **本地 0-CU 策划与预投料层（[`studio/api/local_planner.py`](../../studio/api/local_planner.py)）**：在未分配任何云端 GPU 前完成首尾帧（`first_frame`/`last_frame`）或多模态参考资产（`ref_images`/`ref_videos`/`ref_audios`）校验、跨任务 `cond_hash` 去重预分析、`input_jobs.tar` 未压缩打包，并以 `0.00 CU` 预推入 Google Drive REST API。
+- **全生命周期编排调度器（[`studio/api/colab_batch_runner.py`](../../studio/api/colab_batch_runner.py)）**：串联本地 0-CU 路由选型（`--route fl2va|ref2va --profile quality|fast`）与预投料、Colab `--gpu g4` 实例分配、远端日志流式监控、`finally` 块毫秒级 `colab stop` 停机保护、停机后 8 线程 `HTTP Range` 0-CU 并发拉取及多镜头自动拼接。
+- **云端 G4 阶段式批处理引擎（[`studio/api/remote_batch_engine.py`](../../studio/api/remote_batch_engine.py)）**：在远端 Colab G4 上按路由单选拉取对应 `BF16` 权重包（`97.55 ~ 99.51 GB`）、执行阶段式 `Qwen3-VL-32B BF16` 去重预编码（支持 `MiniMaxH3ImageToVideo` 与 `MiniMaxH3ReferenceToVideo`）并立即卸载（释放 `52.82 GiB` 显存）、常驻 `Pruned BF16 DiT` 单流连续去噪（模式 P1）、后台 CPU 异步 `ffmpeg` 音画封装及机房内网极速出向卸载。
 
 ## 2. 核心执行链路与数据流
 

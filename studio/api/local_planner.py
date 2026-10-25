@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """
 Local 0-CU Planner, Asset Validator, Conditioning Deduplication Analyzer, and Google Drive Pre-Stager
-(`studio/api/local_planner.py`) for the MiniMax H3-Base-FL2VA Production Studio Backend.
-Supports flexible Aspect Ratio (16:9, 9:16, 1:1, 4:3, 3:4, 21:9), Quality (512p, 768p, 1080p),
-and Duration (17k+5 frame grid @ 24fps), as well as FL2VA / I2VA / T2VA conditioning modes.
+(`studio/api/local_planner.py`) for the MiniMax H3 2x2 BF16 Production Studio Backend (`fl2va` / `ref2va` x `quality` / `fast`).
 """
 
 import argparse
@@ -20,19 +18,23 @@ from typing import Any, Dict, List, Optional, Tuple
 try:
     from .manifest_schema import (
         LOCKED_RUN12_CONFIG,
+        ROUTE_PROFILES_2X2,
         BatchManifest,
         compute_conditioning_hash,
         estimate_tokens_and_denoise_sec,
         resolve_dimensions,
+        resolve_route_profile,
         snap_frames_17k_plus_5,
     )
 except ImportError:
     from manifest_schema import (
         LOCKED_RUN12_CONFIG,
+        ROUTE_PROFILES_2X2,
         BatchManifest,
         compute_conditioning_hash,
         estimate_tokens_and_denoise_sec,
         resolve_dimensions,
+        resolve_route_profile,
         snap_frames_17k_plus_5,
     )
 
@@ -50,6 +52,7 @@ DEFAULT_QUOTA_PROJECT = (
 G4_CU_RATE_PER_HOUR = 7.2046
 G4_CU_RATE_PER_SEC = G4_CU_RATE_PER_HOUR / 3600.0
 EST_COLD_START_SEC = 160.64
+EST_BF16_COLD_START_SEC = 310.0
 EST_VLM_ENCODE_PER_UNIQUE_SHOT_SEC = 3.58
 EST_GDRIVE_EGRESS_STAGE1_SEC = 1.85
 
@@ -80,7 +83,11 @@ def resolve_or_seed_default_assets(manifest_dir: Path, manifest_path: Optional[P
 def resolve_shot_geometry(manifest: BatchManifest, shot: Any) -> Tuple[Tuple[int, int], int, float]:
     ar = shot.aspect_ratio or manifest.aspect_ratio
     qual = shot.quality or manifest.quality
-    res = resolve_dimensions(aspect_ratio=ar, quality=qual, explicit_resolution=shot.resolution or (manifest.resolution if not (shot.aspect_ratio or shot.quality) else None))
+    res = resolve_dimensions(
+        aspect_ratio=ar,
+        quality=qual,
+        explicit_resolution=shot.resolution or (manifest.resolution if not (shot.aspect_ratio or shot.quality) else None),
+    )
     if shot.num_frames is not None:
         n_frames = snap_frames_17k_plus_5(int(shot.num_frames), fps=manifest.fps, is_seconds=False)
     elif shot.duration_sec is not None:
@@ -91,6 +98,13 @@ def resolve_shot_geometry(manifest: BatchManifest, shot: Any) -> Tuple[Tuple[int
     return res, n_frames, dur_sec
 
 
+def _resolve_asset_path(manifest_dir: Path, raw_rel_or_abs: str, shot_id: str, label: str) -> Path:
+    p = Path(raw_rel_or_abs) if Path(raw_rel_or_abs).is_absolute() else (manifest_dir / raw_rel_or_abs).resolve()
+    if not p.exists():
+        raise FileNotFoundError(f"Missing {label} for {shot_id}: {p}")
+    return p
+
+
 def analyze_and_pack_batch(
     manifest_path: Path,
     output_tar_path: Path,
@@ -98,6 +112,7 @@ def analyze_and_pack_batch(
     manifest_dir = manifest_path.parent
     resolve_or_seed_default_assets(manifest_dir, manifest_path=manifest_path)
     manifest = BatchManifest.from_json_file(manifest_path)
+    prof_cfg = manifest.inference_config
 
     shot_map = {s.shot_id: s for s in manifest.storyboards}
     unique_hashes: Dict[str, List[str]] = {}
@@ -114,22 +129,49 @@ def analyze_and_pack_batch(
             b_last = b""
             rel_first = ""
             rel_last = ""
+            rel_ref_images: List[str] = []
+            rel_ref_videos: List[str] = []
+            rel_ref_audios: List[str] = []
+            ref_assets_bytes: List[bytes] = []
 
             if s.first_frame:
-                p_first = (manifest_dir / s.first_frame).resolve() if not Path(s.first_frame).is_absolute() else Path(s.first_frame)
-                if not p_first.exists():
-                    raise FileNotFoundError(f"Missing first_frame for {s.shot_id}: {p_first}")
+                p_first = _resolve_asset_path(manifest_dir, s.first_frame, s.shot_id, "first_frame")
                 b_first = p_first.read_bytes()
                 rel_first = f"assets/{s.shot_id}_first.png"
                 (stage_dir / rel_first).write_bytes(b_first)
 
             if s.last_frame:
-                p_last = (manifest_dir / s.last_frame).resolve() if not Path(s.last_frame).is_absolute() else Path(s.last_frame)
-                if not p_last.exists():
-                    raise FileNotFoundError(f"Missing last_frame for {s.shot_id}: {p_last}")
+                p_last = _resolve_asset_path(manifest_dir, s.last_frame, s.shot_id, "last_frame")
                 b_last = p_last.read_bytes()
                 rel_last = f"assets/{s.shot_id}_last.png"
                 (stage_dir / rel_last).write_bytes(b_last)
+
+            for idx, r_img in enumerate(s.ref_images):
+                p_img = _resolve_asset_path(manifest_dir, r_img, s.shot_id, f"ref_images[{idx}]")
+                b_img = p_img.read_bytes()
+                suffix = p_img.suffix or ".png"
+                rel_p = f"assets/{s.shot_id}_ref_img_{idx}{suffix}"
+                (stage_dir / rel_p).write_bytes(b_img)
+                rel_ref_images.append(rel_p)
+                ref_assets_bytes.append(b_img)
+
+            for idx, r_vid in enumerate(s.ref_videos):
+                p_vid = _resolve_asset_path(manifest_dir, r_vid, s.shot_id, f"ref_videos[{idx}]")
+                b_vid = p_vid.read_bytes()
+                suffix = p_vid.suffix or ".mp4"
+                rel_p = f"assets/{s.shot_id}_ref_vid_{idx}{suffix}"
+                (stage_dir / rel_p).write_bytes(b_vid)
+                rel_ref_videos.append(rel_p)
+                ref_assets_bytes.append(b_vid)
+
+            for idx, r_aud in enumerate(s.ref_audios):
+                p_aud = _resolve_asset_path(manifest_dir, r_aud, s.shot_id, f"ref_audios[{idx}]")
+                b_aud = p_aud.read_bytes()
+                suffix = p_aud.suffix or ".wav"
+                rel_p = f"assets/{s.shot_id}_ref_aud_{idx}{suffix}"
+                (stage_dir / rel_p).write_bytes(b_aud)
+                rel_ref_audios.append(rel_p)
+                ref_assets_bytes.append(b_aud)
 
             c_hash = compute_conditioning_hash(
                 prompt=s.prompt,
@@ -138,11 +180,24 @@ def analyze_and_pack_batch(
                 last_frame_bytes=b_last,
                 resolution=s_res,
                 num_frames=s_frames,
+                model_route=manifest.model_route,
+                ref_image_size=s.ref_image_size,
+                ref_assets_bytes=ref_assets_bytes,
             )
             s.cond_hash = c_hash
             unique_hashes.setdefault(c_hash, []).append(s.shot_id)
 
-            perf_est = estimate_tokens_and_denoise_sec(s_res[0], s_res[1], s_frames, steps=manifest.steps)
+            perf_est = estimate_tokens_and_denoise_sec(
+                s_res[0],
+                s_res[1],
+                s_frames,
+                steps=manifest.steps,
+                model_route=manifest.model_route,
+                profile=manifest.profile,
+                num_ref_images=len(rel_ref_images),
+                num_ref_videos=len(rel_ref_videos),
+                ref_image_size=s.ref_image_size,
+            )
             shot_perf_map[s.shot_id] = {
                 "resolution": list(s_res),
                 "num_frames": s_frames,
@@ -150,7 +205,11 @@ def analyze_and_pack_batch(
                 **perf_est,
             }
 
-            mode_str = "FL2VA" if (rel_first and rel_last) else ("I2VA" if rel_first else "T2VA")
+            if manifest.model_route == "ref2va":
+                mode_str = "REF2VA"
+            else:
+                mode_str = "FL2VA" if (rel_first and rel_last) else ("I2VA" if rel_first else "T2VA")
+
             serialized_shots.append({
                 "shot_id": s.shot_id,
                 "title": s.title,
@@ -159,6 +218,10 @@ def analyze_and_pack_batch(
                 "negative_prompt": s.negative_prompt,
                 "first_frame": rel_first,
                 "last_frame": rel_last,
+                "ref_images": rel_ref_images,
+                "ref_videos": rel_ref_videos,
+                "ref_audios": rel_ref_audios,
+                "ref_image_size": s.ref_image_size,
                 "resolution": list(s_res),
                 "num_frames": s_frames,
                 "duration_sec": s_dur,
@@ -186,7 +249,10 @@ def analyze_and_pack_batch(
                 "num_frames": s_perf["num_frames"],
                 "duration_sec": s_perf["duration_sec"],
                 "total_joint_tokens": s_perf["total_joint_tokens"],
-                "locked_config": LOCKED_RUN12_CONFIG["config_id"],
+                "model_route": manifest.model_route,
+                "profile": manifest.profile,
+                "profile_id": manifest.profile_id,
+                "locked_config": prof_cfg["config_id"],
                 "est_denoise_sec": denoise_s,
                 "est_e2e_sec": e2e_s,
                 "est_marginal_cu": round(e2e_s * G4_CU_RATE_PER_SEC, 4),
@@ -197,7 +263,11 @@ def analyze_and_pack_batch(
             "project": manifest.project,
             "batch_id": manifest.batch_id,
             "title": manifest.title,
-            "locked_inference_config": LOCKED_RUN12_CONFIG,
+            "model_route": manifest.model_route,
+            "profile": manifest.profile,
+            "profile_id": manifest.profile_id,
+            "scheduler": manifest.scheduler,
+            "locked_inference_config": prof_cfg,
             "aspect_ratio": manifest.aspect_ratio,
             "quality": manifest.quality,
             "resolution": list(manifest.resolution),
@@ -222,11 +292,12 @@ def analyze_and_pack_batch(
     num_jobs = len(manifest.jobs)
     num_unique_conds = len(unique_hashes)
     naive_cond_sec = num_jobs * 5.13
-    staged_dedup_cond_sec = 3.20 + num_unique_conds * EST_VLM_ENCODE_PER_UNIQUE_SHOT_SEC
+    staged_dedup_cond_sec = 5.40 + num_unique_conds * EST_VLM_ENCODE_PER_UNIQUE_SHOT_SEC
     cond_saved_sec = max(0.0, naive_cond_sec - staged_dedup_cond_sec)
 
+    cold_start_sec = EST_BF16_COLD_START_SEC if prof_cfg.get("precision") == "bf16" else EST_COLD_START_SEC
     est_total_session_sec = (
-        EST_COLD_START_SEC
+        cold_start_sec
         + staged_dedup_cond_sec
         + total_e2e_render_sec
         + EST_GDRIVE_EGRESS_STAGE1_SEC
@@ -241,13 +312,18 @@ def analyze_and_pack_batch(
         "project": manifest.project,
         "batch_id": manifest.batch_id,
         "title": manifest.title,
-        "locked_config": LOCKED_RUN12_CONFIG["config_id"],
+        "model_route": manifest.model_route,
+        "profile": manifest.profile,
+        "profile_id": manifest.profile_id,
+        "scheduler": manifest.scheduler,
+        "locked_config": prof_cfg["config_id"],
         "aspect_ratio": manifest.aspect_ratio,
         "quality": manifest.quality,
         "resolution": list(manifest.resolution),
         "num_frames": manifest.num_frames,
         "duration_sec": manifest.duration_sec,
         "fps": manifest.fps,
+        "steps": manifest.steps,
         "num_storyboards": len(manifest.storyboards),
         "num_unique_conditionings": num_unique_conds,
         "num_jobs": num_jobs,
@@ -265,6 +341,39 @@ def analyze_and_pack_batch(
         "input_tar_sha256": tar_sha256,
         "jobs": job_breakdown,
     }
+
+
+def resolve_active_quota_project(access_token: str, preferred: str = "") -> str:
+    """Dynamically resolves an active GCP quota project for Google Drive API without hardcoding PII."""
+    cand = (
+        preferred
+        or os.environ.get("STUDIO_QUOTA_PROJECT")
+        or os.environ.get("GCP_QUOTA_PROJECT")
+        or (_QUOTA_PROJECT_FILE.read_text(encoding="utf-8").strip() if _QUOTA_PROJECT_FILE.exists() else "")
+    )
+    if cand:
+        return cand
+    import requests
+    for attempt in range(4):
+        try:
+            r = requests.get(
+                "https://cloudresourcemanager.googleapis.com/v1/projects",
+                headers={"Authorization": f"Bearer {access_token}"},
+                timeout=15,
+            )
+            r.raise_for_status()
+            for proj in r.json().get("projects", []):
+                if proj.get("lifecycleState") == "ACTIVE" and proj.get("projectId"):
+                    pid = str(proj["projectId"])
+                    _QUOTA_PROJECT_FILE.parent.mkdir(parents=True, exist_ok=True)
+                    _QUOTA_PROJECT_FILE.write_text(pid, encoding="utf-8")
+                    return pid
+            break
+        except Exception:
+            if attempt == 3:
+                raise
+            time.sleep(0.6 * (attempt + 1))
+    raise RuntimeError("Could not resolve active GCP quota project.")
 
 
 def prestage_input_tar_to_gdrive_0cu(
@@ -288,6 +397,7 @@ def prestage_input_tar_to_gdrive_0cu(
                 raise
             time.sleep(0.8 * (attempt + 1))
     TOKEN_PATH.write_text(creds.to_json())
+    quota_project = resolve_active_quota_project(creds.token, quota_project)
 
     data = tar_path.read_bytes()
     sz = len(data)
@@ -329,6 +439,10 @@ def print_plan_summary(plan: Dict[str, Any], batch_dir: Path | None = None) -> N
     print(f"📋 [Studio 0-CU Planner] Project: {plan.get('project', 'default')} | Batch: {plan['title']}")
     if batch_dir is not None:
         print(f"📂 Batch Output Directory: {batch_dir} (saved: {batch_dir / 'manifest.json'})")
+    print(
+        f"🧭 Route: {plan.get('model_route', 'fl2va').upper()} | Profile: {plan.get('profile_id', 'fl2va_bf16_fast')} "
+        f"({plan.get('steps', 8)} steps, scheduler={plan.get('scheduler', 'simple')})"
+    )
     print(
         f"🔒 Locked Config: {plan['locked_config']} | Default Geometry: "
         f"{plan['resolution'][0]}×{plan['resolution'][1]} ({plan['aspect_ratio']}, {plan['quality']}) × "

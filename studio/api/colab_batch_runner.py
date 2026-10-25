@@ -48,6 +48,7 @@ try:
         analyze_and_pack_batch,
         prestage_input_tar_to_gdrive_0cu,
         print_plan_summary,
+        resolve_active_quota_project,
         resolve_or_seed_default_assets,
     )
     from .manifest_schema import resolve_dimensions, snap_frames_17k_plus_5
@@ -61,6 +62,7 @@ except ImportError:
         analyze_and_pack_batch,
         prestage_input_tar_to_gdrive_0cu,
         print_plan_summary,
+        resolve_active_quota_project,
         resolve_or_seed_default_assets,
     )
     from manifest_schema import resolve_dimensions, snap_frames_17k_plus_5
@@ -125,6 +127,7 @@ def stage2_local_parallel_pull_0cu(
     chunk_mib: int = 8,
 ) -> Dict[str, Any]:
     creds = get_fresh_credentials()
+    quota_project = resolve_active_quota_project(creds.token, quota_project)
     chunk_size = chunk_mib * 1024 * 1024
     ranges: List[Tuple[int, int]] = [
         (s, min(s + chunk_size - 1, expected_raw_bytes - 1))
@@ -179,6 +182,7 @@ def stage2_local_parallel_pull_0cu(
 def delete_gdrive_file_quiet(file_id: str, quota_project: str = DEFAULT_QUOTA_PROJECT) -> bool:
     try:
         creds = get_fresh_credentials()
+        quota_project = resolve_active_quota_project(creds.token, quota_project)
         r = requests.delete(
             f"https://www.googleapis.com/drive/v3/files/{file_id}",
             headers={"Authorization": f"Bearer {creds.token}", "X-Goog-User-Project": quota_project},
@@ -294,6 +298,32 @@ def snapshot_manifest_into_batch_dir(
                     if src_img.resolve() != dst_img.resolve():
                         shutil.copy2(src_img, dst_img)
                     s[key] = dst_rel
+        for list_key in ("ref_images", "ref_videos", "ref_audios"):
+            raw_list = s.get(list_key)
+            if isinstance(raw_list, list) and raw_list:
+                rel_items: List[str] = []
+                for idx_item, val in enumerate(raw_list):
+                    if not val:
+                        continue
+                    src_asset = Path(val) if Path(val).is_absolute() else (src_dir / val).resolve()
+                    if not src_asset.exists():
+                        for candidate in (Path.cwd() / val, _SCRIPT_DIR / val):
+                            if candidate.resolve().exists():
+                                src_asset = candidate.resolve()
+                                break
+                    if src_asset.exists():
+                        base_name = src_asset.name
+                        if base_name in used_asset_names and used_asset_names[base_name] != src_asset.resolve():
+                            base_name = f"{sid}_{list_key}_{idx_item}_{src_asset.name}"
+                        used_asset_names[base_name] = src_asset.resolve()
+                        dst_rel = f"assets/{base_name}"
+                        dst_asset = batch_dir / dst_rel
+                        if src_asset.resolve() != dst_asset.resolve():
+                            shutil.copy2(src_asset, dst_asset)
+                        rel_items.append(dst_rel)
+                    else:
+                        rel_items.append(str(val))
+                s[list_key] = rel_items
 
     dest_manifest_path = batch_dir / "manifest.json"
     dest_manifest_path.write_text(json.dumps(raw, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -309,6 +339,10 @@ def build_quick_manifest_dict(
     num_frames: Optional[int] = None,
     first_frame: str = "",
     last_frame: str = "",
+    ref_images: Optional[List[str]] = None,
+    ref_image_size: str = "match",
+    model_route: Optional[str] = None,
+    profile: str = "fast",
     seeds: List[int] = [42],
     resize_mode: str = "cover",
 ) -> Dict[str, Any]:
@@ -320,29 +354,31 @@ def build_quick_manifest_dict(
         else snap_frames_17k_plus_5(duration_sec, is_seconds=True)
     )
     shot_id = f"shot_01_{aspect_ratio.replace(':', 'x')}_{quality}_{frames}f"
-    return {
+    sb_entry: Dict[str, Any] = {
+        "shot_id": shot_id,
+        "title": f"Shot 01 ({w}x{h} x {frames}f)",
+        "prompt": prompt,
+        "negative_prompt": "",
+        "first_frame": first_frame,
+        "last_frame": last_frame,
+    }
+    if ref_images:
+        sb_entry["ref_images"] = list(ref_images)
+        sb_entry["ref_image_size"] = ref_image_size
+    manifest_dict: Dict[str, Any] = {
         "project": project,
         "batch_id": f"{project}_quick",
         "title": f"Studio Run ({aspect_ratio} {quality} {w}x{h}, {frames}f / {frames/24:.2f}s, {len(seeds)} seed(s))",
+        "profile": profile,
         "aspect_ratio": aspect_ratio,
         "quality": quality,
         "resolution": [w, h],
         "duration_sec": round(frames / 24.0, 2),
         "num_frames": frames,
         "fps": 24,
-        "steps": 8,
         "cfg": 1.0,
         "resize_mode": resize_mode,
-        "storyboards": [
-            {
-                "shot_id": shot_id,
-                "title": f"Shot 01 ({w}x{h} x {frames}f)",
-                "prompt": prompt,
-                "negative_prompt": "",
-                "first_frame": first_frame,
-                "last_frame": last_frame,
-            }
-        ],
+        "storyboards": [sb_entry],
         "jobs": [
             {
                 "job_id": f"job_{idx:02d}_seed{s}",
@@ -353,6 +389,9 @@ def build_quick_manifest_dict(
             for idx, s in enumerate(seeds, 1)
         ],
     }
+    if model_route:
+        manifest_dict["model_route"] = model_route
+    return manifest_dict
 
 
 def run_colab_batch(
@@ -449,13 +488,14 @@ def run_colab_batch(
             print(f"✅ [Step 1] Connected to G4 endpoint={endpoint} in {t_kernel_ready - t_assign_start:.2f}s")
 
             creds = get_fresh_credentials()
+            active_qp = resolve_active_quota_project(creds.token, DEFAULT_QUOTA_PROJECT)
             engine_template = (_SCRIPT_DIR / "remote_batch_engine.py").read_text(encoding="utf-8")
             engine_code = (
                 engine_template
                 .replace("__STUDIO_INPUT_FILE_ID__", input_file_id)
                 .replace("__STUDIO_ACCESS_TOKEN__", creds.token)
                 .replace("__STUDIO_EXPECTED_SHA256__", plan["input_tar_sha256"])
-                .replace("__STUDIO_QUOTA_PROJECT__", DEFAULT_QUOTA_PROJECT)
+                .replace("__STUDIO_QUOTA_PROJECT__", active_qp)
             )
             runtime_script.write_text(engine_code, encoding="utf-8")
 
@@ -589,6 +629,10 @@ def main() -> None:
     parser.add_argument("--frames", type=int, default=None, help="Explicit frame count (snapped to 17k+5 grid)")
     parser.add_argument("--first-frame", type=str, default="", help="Path to first_frame PNG/JPG (optional)")
     parser.add_argument("--last-frame", type=str, default="", help="Path to last_frame PNG/JPG (optional)")
+    parser.add_argument("--ref-images", type=str, default="", help="Comma-separated paths to reference images for ref2va route (1 to 7 images)")
+    parser.add_argument("--ref-image-size", type=str, default="match", choices=["match", "area_512"], help="Reference image sizing mode for ref2va")
+    parser.add_argument("--route", type=str, default=None, choices=["fl2va", "ref2va"], help="Model route: fl2va or ref2va (auto-inferred if omitted)")
+    parser.add_argument("--profile", type=str, default="fast", choices=["quality", "fast"], help="BF16 operator/sampling tier: quality (20-step) or fast (8-step)")
     parser.add_argument("--seeds", type=str, default="42", help="Comma-separated random seeds, e.g. '42' or '42,108,2026'")
     parser.add_argument("--resize-mode", type=str, default="cover", choices=["cover", "stretch"], help="Aspect alignment mode for reference frames")
     parser.add_argument("-o", "--outputs-root", type=Path, default=DEFAULT_OUTPUT_ROOT, help="Root outputs directory (default: studio/outputs)")
@@ -601,6 +645,7 @@ def main() -> None:
     if args.prompt:
         proj = args.project or "default"
         seeds_list = [int(x.strip()) for x in args.seeds.split(",") if x.strip()]
+        ref_imgs_list = [x.strip() for x in args.ref_images.split(",") if x.strip()]
         batch_dir, batch_seq = allocate_project_batch_dir(args.outputs_root, proj, force_new=args.new_batch)
         quick_dict = build_quick_manifest_dict(
             project=proj,
@@ -611,6 +656,10 @@ def main() -> None:
             num_frames=args.frames,
             first_frame=args.first_frame,
             last_frame=args.last_frame,
+            ref_images=ref_imgs_list or None,
+            ref_image_size=args.ref_image_size,
+            model_route=args.route,
+            profile=args.profile,
             seeds=seeds_list,
             resize_mode=args.resize_mode,
         )

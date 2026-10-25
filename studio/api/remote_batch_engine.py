@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
 Cloud Blackwell G4 Production Batch & Single-Shot Rendering Engine (`studio/api/remote_batch_engine.py`).
-Strictly executes the ADR-03 locked `Run 12 [S8-FullStack-Pareto]` configuration and ADR-05 Mode P1 pipeline
-(with Experiment 05's P2 micro-ablation probe removed for pure zero-waste production).
-Supports arbitrary 32px-aligned aspect ratios/resolutions, (17k+5) durations, and FL2VA / I2VA / T2VA modes.
+Supports the 2x2 BF16 model-routing & operator-tier matrix (`model_route` in {"fl2va", "ref2va"} x
+`profile` in {"quality", "fast"}) with staged Qwen3-VL-32B BF16 pre-encode + immediate VRAM unload.
 """
-import argparse, concurrent.futures, gc, hashlib, importlib.metadata, json, logging, math, os, shutil, subprocess, sys, tarfile, time
+import argparse, concurrent.futures, gc, hashlib, json, logging, math, os, shutil, subprocess, sys, tarfile, time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -38,12 +37,12 @@ PINNED_PROD_PACKAGES: List[str] = [
 G4_CU_RATE_PER_HOUR = 7.2046
 G4_CU_RATE_PER_SEC = G4_CU_RATE_PER_HOUR / 3600.0
 REPO_ID = "Comfy-Org/MiniMax-H3"
-GOLD_BUNDLE_FILES: List[Dict[str, Any]] = [
-    {"role": "FL2VA DiT (Pruned INT8 ConvRot)", "rel_path": "diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors", "size": 20970379616},
-    {"role": "Text Encoder (Qwen3-VL-32B NVFP4 AWQ)", "rel_path": "text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors", "size": 15687142551},
-    {"role": "Video VAE (INT8 ConvRot)", "rel_path": "vae/minimax_h3_video_vae_int8_convrot.safetensors", "size": 2811065184},
-    {"role": "8-Step Turbo LoRA (BF16)", "rel_path": "loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors", "size": 1956193000},
-    {"role": "Audio VAE (FP32)", "rel_path": "vae/minimax_h3_audio_vae_fp32.safetensors", "size": 605254808},
+DEFAULT_BF16_BUNDLE_FILES: List[Dict[str, Any]] = [
+    {"role": "FL2VA DiT (Pruned BF16)", "repo_id": REPO_ID, "rel_path": "diffusion_models/minimax_h3_fl2va_pruned_bf16.safetensors", "target_rel_path": "diffusion_models/minimax_h3_fl2va_pruned_bf16.safetensors", "size": 40225724176},
+    {"role": "Text Encoder (Qwen3-VL-32B BF16)", "repo_id": REPO_ID, "rel_path": "text_encoders/qwen3vl_32b_minimax_h3_bf16.safetensors", "target_rel_path": "text_encoders/qwen3vl_32b_minimax_h3_bf16.safetensors", "size": 51506295256},
+    {"role": "Video VAE (FP16)", "repo_id": REPO_ID, "rel_path": "vae/minimax_h3_video_vae_fp16.safetensors", "target_rel_path": "vae/minimax_h3_video_vae_fp16.safetensors", "size": 5207808496},
+    {"role": "Audio VAE (FP32)", "repo_id": REPO_ID, "rel_path": "vae/minimax_h3_audio_vae_fp32.safetensors", "target_rel_path": "vae/minimax_h3_audio_vae_fp32.safetensors", "size": 605254808},
+    {"role": "FL2V 8-Step Turbo LoRA (BF16)", "repo_id": REPO_ID, "rel_path": "loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors", "target_rel_path": "loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors", "size": 1956193000},
 ]
 
 
@@ -106,7 +105,7 @@ def bootstrap_and_parallel_ingress(
     input_file_id: str, access_token: str, quota_project: str, work_dir: Path, expected_sha256: str
 ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     t_phase0 = time.perf_counter()
-    print("=" * 96 + "\n🛠️ [Phase 1/4] Lean Production Bootstrap + Parallel 5-Weight HF Download + <0.5s GDrive Job Pull\n" + "=" * 96)
+    print("=" * 96 + "\n🛠️ [Phase 1/4] Lean Production Bootstrap + <0.5s GDrive Job Pull + Route-Specific BF16 HF Download\n" + "=" * 96)
     t_env0 = time.perf_counter()
     if not COMFY_ROOT.exists():
         run_cmd(["git", "clone", "https://github.com/comfyanonymous/ComfyUI.git", str(COMFY_ROOT)])
@@ -119,32 +118,42 @@ def bootstrap_and_parallel_ingress(
     run_cmd([sys.executable, "-m", "pip", "install", "-q", *PINNED_PROD_PACKAGES])
     env_bootstrap_sec = time.perf_counter() - t_env0
 
+    ingress_stats = pull_input_tar_from_gdrive(input_file_id, access_token, quota_project, work_dir, expected_sha256)
+    manifest = json.loads((work_dir / "input_jobs" / "batch_manifest_resolved.json").read_text(encoding="utf-8"))
+    locked_cfg = manifest.get("locked_inference_config", {})
+    bundle_files: List[Dict[str, Any]] = locked_cfg.get("weights_bundle") or DEFAULT_BF16_BUNDLE_FILES
+
     from huggingface_hub import hf_hub_download
     models_dir = COMFY_ROOT / "models"
+    n_files = len(bundle_files)
 
     def dl_one_weight(idx_item: Tuple[int, Dict[str, Any]]) -> Tuple[str, int, float, bool]:
         idx, item = idx_item
-        rel_path, fsize = item["rel_path"], item["size"]
-        target_file = models_dir / rel_path
+        repo_id = item.get("repo_id", REPO_ID)
+        rel_path = item["rel_path"]
+        target_rel_path = item.get("target_rel_path", rel_path)
+        fsize = int(item["size"])
+        target_file = models_dir / target_rel_path
         if target_file.exists() and target_file.stat().st_size == fsize:
-            print(f"  [{idx}/5] ✅ Cached {item['role']} ({fsize / 1e9:.2f} GB)")
+            print(f"  [{idx}/{n_files}] ✅ Cached {item['role']} ({fsize / 1e9:.2f} GB)")
             return item["role"], fsize, 0.0, True
         t0 = time.perf_counter()
-        hf_hub_download(repo_id=REPO_ID, revision="main", filename=rel_path, local_dir=str(models_dir))
+        dl_str = hf_hub_download(repo_id=repo_id, revision="main", filename=rel_path, local_dir=str(models_dir))
+        dl_path = Path(dl_str)
+        if target_file.resolve() != dl_path.resolve():
+            target_file.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(dl_path), str(target_file))
         dt = time.perf_counter() - t0
-        print(f"  [{idx}/5] ⬇️ {item['role']} ({fsize / 1e9:.2f} GB) in {dt:.1f}s ({(fsize / (1024**2)) / max(dt, 1e-6):.0f} MiB/s)")
+        print(f"  [{idx}/{n_files}] ⬇️ {item['role']} ({fsize / 1e9:.2f} GB) in {dt:.1f}s ({(fsize / (1024**2)) / max(dt, 1e-6):.0f} MiB/s)")
         return item["role"], fsize, dt, False
 
     t_dl0 = time.perf_counter()
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
-        fut_ingress = pool.submit(pull_input_tar_from_gdrive, input_file_id, access_token, quota_project, work_dir, expected_sha256)
-        weight_futures = [pool.submit(dl_one_weight, (i, item)) for i, item in enumerate(GOLD_BUNDLE_FILES, 1)]
-        ingress_stats = fut_ingress.result()
+        weight_futures = [pool.submit(dl_one_weight, (i, item)) for i, item in enumerate(bundle_files, 1)]
         weight_results = [f.result() for f in weight_futures]
     shutil.rmtree(models_dir / ".cache", ignore_errors=True)
     wall_download_sec = time.perf_counter() - t_dl0
     phase1_total_sec = time.perf_counter() - t_phase0
-    manifest = json.loads((work_dir / "input_jobs" / "batch_manifest_resolved.json").read_text(encoding="utf-8"))
     print(f"  ✅ Phase 1 completed in {phase1_total_sec:.2f}s (env={env_bootstrap_sec:.2f}s, dl_wall={wall_download_sec:.2f}s)")
     return {
         "env_bootstrap_sec": round(env_bootstrap_sec, 3),
@@ -165,6 +174,11 @@ def clone_conditioning(cond: list) -> list:
                 dict_cond[k] = [
                     {"resolved_frame_index": kf["resolved_frame_index"], "latent": kf["latent"].clone() if kf.get("latent") is not None else None}
                     for kf in v
+                ]
+            elif k == "minimax_refs" and isinstance(v, list):
+                dict_cond[k] = [
+                    {rk: (rv.clone() if hasattr(rv, "clone") else rv) for rk, rv in ref_item.items()}
+                    for ref_item in v
                 ]
             elif hasattr(v, "clone"):
                 dict_cond[k] = v.clone()
@@ -199,6 +213,14 @@ def load_aligned_image_np(path: Path, width: int, height: int, resize_mode: str 
     else:
         img = img.resize((width, height), Image.Resampling.LANCZOS)
     return np.asarray(img, dtype=np.float32) / 255.0
+
+
+def load_raw_image_tensor(path: Path) -> Any:
+    import numpy as np, torch
+    from PIL import Image
+    img = Image.open(path).convert("RGB")
+    arr = np.asarray(img, dtype=np.float32) / 255.0
+    return torch.from_numpy(arr).unsqueeze(0)
 
 
 def mux_and_score_job_cpu(
@@ -287,7 +309,7 @@ DEFAULT_QUOTA_PROJECT = os.environ.get("STUDIO_QUOTA_PROJECT", "__STUDIO_QUOTA_P
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Studio Cloud G4 Production Engine (Locked Run 12)")
+    parser = argparse.ArgumentParser(description="Studio Cloud G4 Production Engine (2x2 BF16 Route/Profile Matrix)")
     parser.add_argument("--input-file-id", default=DEFAULT_INPUT_FILE_ID)
     parser.add_argument("--access-token", default=DEFAULT_ACCESS_TOKEN)
     parser.add_argument("--quota-project", default=DEFAULT_QUOTA_PROJECT)
@@ -305,14 +327,14 @@ def main() -> None:
 
     sys.path.insert(0, str(COMFY_ROOT))
     sys.path.insert(0, str(COMFY_ROOT / "custom_nodes"))
-    import comfy_kitchen as ck, numpy as np, psutil, requests, torch
+    import comfy_kitchen as ck, psutil, requests, torch
     import comfy.ldm.minimax.model as minimax_model_mod
     import comfy.ldm.modules.attention as comfy_attn_mod
     import comfy.model_management as mm
     import comfy.ops, nodes
     from comfy_extras.nodes_audio import VAEDecodeAudio
     from comfy_extras.nodes_custom_sampler import BasicGuider, BasicScheduler, KSamplerSelect, RandomNoise, SamplerCustomAdvanced
-    from comfy_extras.nodes_minimax_h3 import MiniMaxH3ImageToVideo
+    from comfy_extras.nodes_minimax_h3 import MiniMaxH3ImageToVideo, MiniMaxH3ReferenceToVideo
     from comfy_extras.nodes_sparse_attention import BlockSparseAttention
     import comfyui_sol_attn.minimax as community_sol_mod
     from comfyui_sol_attn.minimax import MiniMaxH3FusedModulation
@@ -321,17 +343,24 @@ def main() -> None:
     props = torch.cuda.get_device_properties(0)
     detector = FallbackAlertDetector()
     logging.getLogger().addHandler(detector)
+    locked_cfg = manifest.get("locked_inference_config", {})
+    model_route = str(locked_cfg.get("model_route", manifest.get("model_route", "fl2va")))
+    profile_id = str(locked_cfg.get("profile_id", f"{model_route}_bf16_{manifest.get('profile', 'fast')}"))
     fps, steps = int(manifest["fps"]), int(manifest["steps"])
+    scheduler_name = str(manifest.get("scheduler", locked_cfg.get("scheduler", "simple")))
     resize_mode = manifest.get("resize_mode", "cover")
+    clip_file = Path(locked_cfg.get("clip_name", "text_encoders/qwen3vl_32b_minimax_h3_bf16.safetensors")).name
+    video_vae_file = Path(locked_cfg.get("video_vae_name", "vae/minimax_h3_video_vae_fp16.safetensors")).name
+    audio_vae_file = Path(locked_cfg.get("audio_vae_name", "vae/minimax_h3_audio_vae_fp32.safetensors")).name
 
-    print("\n" + "=" * 96 + "\n🧠 [Phase 2/4] Staged Conditioning Pre-Encode & SHA-256 Deduplication (Qwen3-VL-32B + Video VAE)\n" + "=" * 96)
+    print("\n" + "=" * 96 + f"\n🧠 [Phase 2/4] Staged Conditioning Pre-Encode ({clip_file} + {video_vae_file}, route={model_route})\n" + "=" * 96)
     t_p2_start = time.perf_counter()
     torch.cuda.reset_peak_memory_stats()
     t_vlm_load0 = time.perf_counter()
-    clip = nodes.CLIPLoader().load_clip("qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors", type="minimax")[0]
+    clip = nodes.CLIPLoader().load_clip(clip_file, type="minimax")[0]
     vae_loader = nodes.VAELoader()
-    video_vae = vae_loader.load_vae("minimax_h3_video_vae_int8_convrot.safetensors")[0]
-    audio_vae = vae_loader.load_vae("minimax_h3_audio_vae_fp32.safetensors")[0]
+    video_vae = vae_loader.load_vae(video_vae_file)[0]
+    audio_vae = vae_loader.load_vae(audio_vae_file)[0]
     vlm_vae_load_sec = time.perf_counter() - t_vlm_load0
 
     shots_by_id = {s["shot_id"]: s for s in manifest["storyboards"]}
@@ -360,16 +389,37 @@ def main() -> None:
                 last_t = torch.from_numpy(last_np).unsqueeze(0)
 
             with torch.inference_mode():
-                b_cond, b_lat = MiniMaxH3ImageToVideo.execute(
-                    clip=clip,
-                    vae=video_vae,
-                    prompt=shot["prompt"],
-                    width=s_w,
-                    height=s_h,
-                    length=s_len,
-                    first_frame=first_t,
-                    last_frame=last_t,
-                )
+                if model_route == "ref2va":
+                    ref_imgs_dict: Dict[str, Any] = {}
+                    for r_idx, rel_p in enumerate(shot.get("ref_images", [])):
+                        p_ref = input_stage_dir / rel_p
+                        ref_imgs_dict[f"ref_image_{r_idx}"] = load_raw_image_tensor(p_ref)
+                        if r_idx == 0 and first_np is None:
+                            first_np = load_aligned_image_np(p_ref, s_w, s_h, resize_mode=resize_mode)
+                        elif r_idx == 1 and last_np is None:
+                            last_np = load_aligned_image_np(p_ref, s_w, s_h, resize_mode=resize_mode)
+                    b_cond, b_lat = MiniMaxH3ReferenceToVideo.execute(
+                        clip=clip,
+                        prompt=shot["prompt"],
+                        width=s_w,
+                        height=s_h,
+                        length=s_len,
+                        ref_image_size=str(shot.get("ref_image_size", "match")),
+                        vae=video_vae,
+                        audio_vae=audio_vae,
+                        ref_images=ref_imgs_dict,
+                    )
+                else:
+                    b_cond, b_lat = MiniMaxH3ImageToVideo.execute(
+                        clip=clip,
+                        vae=video_vae,
+                        prompt=shot["prompt"],
+                        width=s_w,
+                        height=s_h,
+                        length=s_len,
+                        first_frame=first_t,
+                        last_frame=last_t,
+                    )
             torch.cuda.synchronize()
             enc_s = time.perf_counter() - t_c0
             unique_encode_secs.append(enc_s)
@@ -403,10 +453,21 @@ def main() -> None:
     phase2_total_sec = time.perf_counter() - t_p2_start
     print(f"  ✅ Phase 2 complete in {phase2_total_sec:.2f}s | Freed Qwen3-VL VRAM: {vram_before_vlm_unload_gib - vram_after_vlm_unload_gib:.2f} GiB")
 
-    print("\n" + "=" * 96 + "\n🔒 [Phase 3/4] One-Time Resident Run 12 [S8-FullStack-Pareto] Injection & 1-Step Warmup\n" + "=" * 96)
+    unet_file = Path(locked_cfg.get("unet_name", "diffusion_models/minimax_h3_fl2va_pruned_bf16.safetensors")).name
+    lora_rel = locked_cfg.get("lora_name")
+    dense_backend = str(locked_cfg.get("dense_backend", "sdpa"))
+    sparse_mode = str(locked_cfg.get("sparse_mode", "none"))
+    fused_mod = bool(locked_cfg.get("fused_mod", True))
+
+    print("\n" + "=" * 96 + f"\n🔒 [Phase 3/4] Resident [{profile_id}] Injection ({unet_file}) & 1-Step Warmup\n" + "=" * 96)
     t_dit0 = time.perf_counter()
-    base_model = nodes.UNETLoader().load_unet("minimax_h3_fl2va_pruned_int8_convrot.safetensors", "default")[0]
-    lora_model = nodes.LoraLoaderModelOnly().load_lora_model_only(base_model, "minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors", 1.0)[0]
+    base_model = nodes.UNETLoader().load_unet(unet_file, "default")[0]
+    if lora_rel:
+        lora_file = Path(lora_rel).name
+        resident_model = nodes.LoraLoaderModelOnly().load_lora_model_only(base_model, lora_file, float(locked_cfg.get("lora_strength", 1.0)))[0]
+    else:
+        resident_model = base_model.clone()
+
     kernel_counters = {"sdpa": 0, "sage": 0, "ck_int8": 0, "ck_sol_chunked": 0, "ck_sol_direct": 0, "triton_sol": 0, "fused_mod_blocks": 0}
 
     def wrap_counter(key: str, fn):
@@ -417,8 +478,6 @@ def main() -> None:
 
     comfy_attn_mod.sageattn = wrap_counter("sage", sageattn)
     comfy_attn_mod.SAGE_ATTENTION_IS_AVAILABLE = True
-    comfy_attn_mod.optimized_attention = comfy_attn_mod.attention_sage
-    minimax_model_mod.optimized_attention = comfy_attn_mod.attention_sage
     comfy.ops.scaled_dot_product_attention = wrap_counter("sdpa", comfy.ops.scaled_dot_product_attention)
     ck.int8_attention = wrap_counter("ck_int8", ck.int8_attention)
     ck.int8_attention_from_prequantized = wrap_counter("ck_int8", ck.int8_attention_from_prequantized)
@@ -427,20 +486,35 @@ def main() -> None:
     community_sol_mod.sol_attn = wrap_counter("triton_sol", community_sol_mod.sol_attn)
     community_sol_mod._FusionLog.hit = wrap_counter("fused_mod_blocks", community_sol_mod._FusionLog.hit)
 
-    resident_run12_model = BlockSparseAttention.execute(
-        lora_model.clone(),
-        selection={"selection": "sol-attn", "tau": 1.3},
-        start_percent=0.20,
-        end_percent=1.0,
-        dense_blocks="",
-        min_tokens=4096,
-        extra_tokens=256,
-        sink_conditioning="exact_kv_and_rows",
-        verbose=False,
-    )[0]
-    resident_run12_model.model_options["transformer_options"].get("patches_replace", {}).pop("dit", None)
-    resident_run12_model = MiniMaxH3FusedModulation().patch(model=resident_run12_model, enabled=True)[0]
-    mm.load_models_gpu([resident_run12_model])
+    if dense_backend == "sage":
+        comfy_attn_mod.optimized_attention = comfy_attn_mod.attention_sage
+        minimax_model_mod.optimized_attention = comfy_attn_mod.attention_sage
+    elif dense_backend == "ck_int8":
+        comfy_attn_mod.optimized_attention = comfy_attn_mod.attention_comfy_kitchen_int8
+        minimax_model_mod.optimized_attention = comfy_attn_mod.attention_comfy_kitchen_int8
+    else:
+        comfy_attn_mod.optimized_attention = comfy_attn_mod.attention_pytorch
+        minimax_model_mod.optimized_attention = comfy_attn_mod.attention_pytorch
+
+    if sparse_mode in ("ck_sol_direct", "ck_sol_chunked"):
+        resident_model = BlockSparseAttention.execute(
+            resident_model.clone(),
+            selection={"selection": "sol-attn", "tau": float(locked_cfg.get("tau", 1.3))},
+            start_percent=float(locked_cfg.get("start_percent", 0.20)),
+            end_percent=float(locked_cfg.get("end_percent", 1.0)),
+            dense_blocks=str(locked_cfg.get("dense_blocks", "")),
+            min_tokens=int(locked_cfg.get("min_tokens", 4096)),
+            extra_tokens=int(locked_cfg.get("extra_tokens", 256)),
+            sink_conditioning=str(locked_cfg.get("sink_conditioning", "exact_kv_and_rows")),
+            verbose=False,
+        )[0]
+        if sparse_mode == "ck_sol_direct":
+            resident_model.model_options["transformer_options"].get("patches_replace", {}).pop("dit", None)
+
+    if fused_mod:
+        resident_model = MiniMaxH3FusedModulation().patch(model=resident_model, enabled=True)[0]
+
+    mm.load_models_gpu([resident_model])
     torch.cuda.synchronize()
     dit_load_and_patch_sec = time.perf_counter() - t_dit0
 
@@ -450,8 +524,8 @@ def main() -> None:
     first_cache_entry = next(iter(cond_cache.values()))
     warm_cond, warm_lat = clone_conditioning(first_cache_entry["base_cond"]), clone_av_latent(first_cache_entry["base_latent"])
     with torch.inference_mode():
-        warm_sigmas = BasicScheduler.execute(resident_run12_model, "simple", 1, 1.0)[0]
-        warm_guider = BasicGuider.execute(resident_run12_model, warm_cond)[0]
+        warm_sigmas = BasicScheduler.execute(resident_model, scheduler_name, 1, 1.0)[0]
+        warm_guider = BasicGuider.execute(resident_model, warm_cond)[0]
         _, warm_den = SamplerCustomAdvanced.execute(RandomNoise.execute(42)[0], warm_guider, sampler_obj, warm_sigmas, warm_lat)
         _ = vae_decoder.decode(video_vae, warm_den)[0]
         _ = VAEDecodeAudio.execute(audio_vae, warm_den)[0]
@@ -462,9 +536,9 @@ def main() -> None:
     if detector.fallback_errors:
         raise RuntimeError(f"Fallback detected during 1-step warmup: {detector.fallback_errors}")
     warmup_1step_sec = time.perf_counter() - t_warm0
-    print(f"  🔥 1-Step Run 12 + Video/Audio VAE warmup finished in {warmup_1step_sec:.2f}s")
+    print(f"  🔥 1-Step [{profile_id}] + Video/Audio VAE warmup finished in {warmup_1step_sec:.2f}s")
 
-    print("\n" + "=" * 96 + f"\n🚀 [Phase 4/4] Mode P1 Continuous Rendering ({len(manifest['jobs'])} Jobs: Resident Run 12 + Async CPU ffmpeg)\n" + "=" * 96)
+    print("\n" + "=" * 96 + f"\n🚀 [Phase 4/4] Mode P1 Continuous Rendering ({len(manifest['jobs'])} Jobs: Resident [{profile_id}] + Async CPU ffmpeg)\n" + "=" * 96)
     mp4_pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
     mp4_futures: Dict[str, concurrent.futures.Future] = {}
     job_metrics_list: List[Dict[str, Any]] = []
@@ -486,8 +560,8 @@ def main() -> None:
 
         t_j0 = time.perf_counter()
         with torch.inference_mode():
-            sigmas = BasicScheduler.execute(resident_run12_model, "simple", steps, 1.0)[0]
-            guider = BasicGuider.execute(resident_run12_model, cond_copy)[0]
+            sigmas = BasicScheduler.execute(resident_model, scheduler_name, steps, 1.0)[0]
+            guider = BasicGuider.execute(resident_model, cond_copy)[0]
             _, out_denoised = SamplerCustomAdvanced.execute(noise_obj, guider, sampler_obj, sigmas, latent_copy)
             torch.cuda.synchronize()
             t_denoise = time.perf_counter() - t_j0
@@ -532,12 +606,14 @@ def main() -> None:
             "index": idx,
             "job_id": jid,
             "shot_id": sid,
+            "model_route": model_route,
+            "profile_id": profile_id,
             "resolution": [c_entry["width"], c_entry["height"]],
             "num_frames": c_entry["length"],
             "cond_hash": job["cond_hash"],
             "seed": seed,
             "note": job.get("note", ""),
-            "locked_config": "Run 12 [S8-FullStack-Pareto]",
+            "locked_config": profile_id,
             "switch_prep_sec": round(switch_prep_sec, 5),
             "denoise_sec": round(t_denoise, 4),
             "vae_video_sec": round(t_vae_video, 4),
@@ -579,6 +655,8 @@ def main() -> None:
     payload = {
         "batch_id": manifest["batch_id"],
         "title": manifest["title"],
+        "model_route": model_route,
+        "profile_id": profile_id,
         "locked_inference_config": manifest["locked_inference_config"],
         "hardware": {
             "gpu_name": props.name,
@@ -603,7 +681,7 @@ def main() -> None:
     }
     (args.output_dir / "studio_batch_metrics.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
     (args.output_dir / "manifest_results.json").write_text(
-        json.dumps({"batch_id": manifest["batch_id"], "status": "completed", "jobs": job_metrics_list, "recommendations": shot_best_seeds}, indent=2, ensure_ascii=False),
+        json.dumps({"batch_id": manifest["batch_id"], "model_route": model_route, "profile_id": profile_id, "status": "completed", "jobs": job_metrics_list, "recommendations": shot_best_seeds}, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
 
