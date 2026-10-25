@@ -1,0 +1,97 @@
+{
+  "round": "round02a",
+  "title": "Sub04 Round 02A — Targeted Multi-Seed Gacha Boost for Spectacle & Transition Shots (s01, s04, s05, s12, s14, s18)",
+  "hypothesis": "Adding seeds [108, 2026] on the 6 spectacle/transition shots that previously had only 2 seeds increases active motion and reduces anchor drift.",
+  "shots": [
+    {
+      "id": "s01",
+      "mode": "fl2va",
+      "first": "kf00",
+      "last": "kf01",
+      "num_frames": 39,
+      "seeds": [
+        108,
+        2026
+      ],
+      "title": "月下对峙·水之呼吸起势 (Moonlit Standoff to Water Breathing Charge)",
+      "description": "In a moonlit traditional Japanese wooden castle courtyard framed by red autumn maple leaves, the young Demon Slayer boy in a crimson-and-black checkered haori transitions from Picture 1 at 0.00s into an explosive low-angle forward sprint toward Picture 2 at 1.62s. Blue-and-white stylized ukiyo-e water waves and foaming white crests burst from his black Nichirin katana as his sandals kick off the wooden floorboards, his haori billowing backward while the camera pushes in rapidly toward his determined amber eyes.",
+      "soundscape": "Sharp inhalation of Total Concentration breathing, wooden floorboards creaking under a sudden dash, a surging roar of pressurized water waves, and metallic katana resonance.",
+      "music": "Tense shamisen plucking that erupts into fast taiko war drums and dramatic orchestral strings."
+    },
+    {
+      "id": "s04",
+      "mode": "fl2va",
+      "first": "kf03",
+      "last": "kf04",
+      "num_frames": 39,
+      "seeds": [
+        108,
+        2026
+      ],
+      "title": "水之呼吸·叁之型 流流舞连斩 (Third Form: Flowing Dance Serpentine Blitz)",
+      "description": "Dropping from the mid-air water wheel of Picture 1 at 0.00s, the Demon Slayer touches down on the courtyard planks and weaves forward in a sinuous S-curve footwork pattern toward the demon on the right, arriving at the dynamic flowing slash pose of Picture 2 at 1.62s. Twin ribbons of glowing azure ukiyo-e currents spiral around his checkered haori while he deflects crimson blood-blade projectiles with rapid Whip-like katana strokes.",
+      "soundscape": "Rapid footwork skidding on timber, rhythmic rushing river currents, three crisp metallic parry rings, and slicing wind.",
+      "music": "Fast syncopated shamisen and booming taiko rhythm."
+    },
+    {
+      "id": "s05",
+      "mode": "fl2va",
+      "first": "kf04",
+      "last": "kf05",
+      "num_frames": 39,
+      "seeds": [
+        108,
+        2026
+      ],
+      "title": "水之呼吸·拾之型 生生流转水龙显形 (Tenth Form: Constant Flux Water Dragon Manifestation)",
+      "description": "From the serpentine slash stance of Picture 1 at 0.00s, the Demon Slayer rotations build rotational momentum until a colossal ukiyo-e azure Water Dragon with foaming white fangs and glowing cyan eyes materializes around his katana in Picture 2 at 1.62s. The camera arcs into a dramatic low-angle hero view as the coiling water dragon rises beneath the silver full moon, illuminating the courtyard with blue reflections.",
+      "soundscape": "Deep oceanic rumble, roaring water dragon howl, howling gale, and high-pitched katana vibration.",
+      "music": "Crescendo of full orchestra, choir accents, and thunderous taiko rolls."
+    },
+    {
+      "id": "s12",
+      "mode": "fl2va",
+      "first": "kf11",
+      "last": "kf12",
+      "num_frames": 39,
+      "seeds": [
+        108,
+        2026
+      ],
+      "title": "上弦血鬼术·赤黑雷涡爆发 (Blood Demon Art: Crimson Lightning Vortex)",
+      "description": "As the solar flame ring shines overhead in Picture 1 at 0.00s, the camera whips down to the courtyard where the enraged silver-haired Upper-Rank demon spreads both clawed hands and unleashes a violent tornado of black-and-crimson Blood Demon Art lightning and razor-sharp blood crescents in Picture 2 at 1.62s, splintering the surrounding wooden railings.",
+      "soundscape": "Ear-splitting crackle of dark crimson lightning, demonic energy roar, and splintering castle timber.",
+      "music": "Menacing low brass, dissonant strings, and thunderous percussion."
+    },
+    {
+      "id": "s14",
+      "mode": "fl2va",
+      "first": "kf13",
+      "last": "kf14",
+      "num_frames": 39,
+      "seeds": [
+        108,
+        2026
+      ],
+      "title": "借力腾空·日晕之龙显圣 (Vaulting into the Moon & Solar Fire Dragon Manifestation)",
+      "description": "Rebounding off the mid-air shockwave in Picture 1 at 0.00s, the Demon Slayer backflips high above the castle rooftops toward the giant silver moon as a colossal golden-and-crimson ukiyo-e Solar Fire Dragon with blazing eyes and fiery whiskers materializes around his katana in Picture 2 at 1.62s.",
+      "soundscape": "High-altitude wind rush, sacred dragon roar of roaring solar fire, and ringing Nichirin steel.",
+      "music": "Triumphant sacred kagura flute and soaring choir crescendo."
+    },
+    {
+      "id": "s18",
+      "mode": "fl2va",
+      "first": "kf17",
+      "last": "kf18",
+      "num_frames": 39,
+      "seeds": [
+        108,
+        2026
+      ],
+      "title": "烈日余波·金焰火环扩散崩解 (Horizontal Slash to Expanding Solar Shockwave Ring)",
+      "description": "From the decisive horizontal slash follow-through in Picture 1 at 0.00s, a brilliant circular shockwave ring of golden-crimson solar fire expands outward across the wooden courtyard deck in Picture 2 at 1.62s while the Demon Slayer holds his low follow-through stance and the defeated demon begins crumbling into glowing embers.",
+      "soundscape": "Brief dramatic silence followed by a resonant booming shockwave of solar fire and crackling embers.",
+      "music": "Single deep taiko boom and sustained ethereal choir chord."
+    }
+  ]
+}

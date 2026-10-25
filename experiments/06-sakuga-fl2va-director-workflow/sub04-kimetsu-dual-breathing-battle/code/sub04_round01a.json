@@ -1,0 +1,98 @@
+{
+  "round": "round01a",
+  "title": "Sub04 Batch 1A — Water Breathing Encounter & Forms I-X (s01..s05 + s01_i2va)",
+  "hypothesis": "Shared-lineage 1344x768 keyframes kf00..kf20 with 39f FL2VA multi-seed Gacha outperform I2VA and 73f merged windows while keeping input_jobs.tar <= 16.5 MB for zero Stage 0 upload timeouts.",
+  "shots": [
+    {
+      "id": "s01",
+      "mode": "fl2va",
+      "first": "kf00",
+      "last": "kf01",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "月下对峙·水之呼吸起势 (Moonlit Standoff to Water Breathing Charge)",
+      "description": "In a moonlit traditional Japanese wooden castle courtyard framed by red autumn maple leaves, the young Demon Slayer boy in a crimson-and-black checkered haori transitions from Picture 1 at 0.00s into an explosive low-angle forward sprint toward Picture 2 at 1.62s. Blue-and-white stylized ukiyo-e water waves and foaming white crests burst from his black Nichirin katana as his sandals kick off the wooden floorboards, his haori billowing backward while the camera pushes in rapidly toward his determined amber eyes.",
+      "soundscape": "Sharp inhalation of Total Concentration breathing, wooden floorboards creaking under a sudden dash, a surging roar of pressurized water waves, and metallic katana resonance.",
+      "music": "Tense shamisen plucking that erupts into fast taiko war drums and dramatic orchestral strings."
+    },
+    {
+      "id": "s02",
+      "mode": "fl2va",
+      "first": "kf01",
+      "last": "kf02",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777,
+        108
+      ],
+      "title": "水之呼吸·壹之型 水面斩击交锋 (Water Surface Slash vs Blood Scythe Clash)",
+      "description": "Continuing from the low forward charge in Picture 1 at 0.00s, the Demon Slayer lunges into the center of the courtyard and swings his katana horizontally in a sweeping azure ukiyo-e wave arc, colliding head-on at 1.62s (Picture 2) with the silver-haired Upper-Rank demon's dark-crimson Blood Demon Art scythes. Golden metallic sparks, pressurized water spray, and crimson energy shards burst outward from the central blade lock as the camera tracks laterally into a wide two-shot.",
+      "soundscape": "Deafening clang of tempered steel against hardened blood blades, crashing ocean surf, crackling dark-red energy, and heavy shockwave wind.",
+      "music": "Driving high-tempo taiko percussion layered with brass stabs and frantic strings."
+    },
+    {
+      "id": "s03",
+      "mode": "fl2va",
+      "first": "kf02",
+      "last": "kf03",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777,
+        108
+      ],
+      "title": "水之呼吸·贰之型 水车腾空翻转 (Second Form: Water Wheel Mid-Air Spin)",
+      "description": "From the intense central blade lock in Picture 1 at 0.00s, the Demon Slayer kicks off the demon's guard and vaults high into the moonlit night sky, spinning his body 360 degrees vertically to form the full circular ukiyo-e water wheel vortex of Picture 2 at 1.62s. Foaming blue waves and white sea spray trail his rotating black katana against the giant silver moon as the camera tilts upward to follow his acrobatics.",
+      "soundscape": "Explosive upward leap whoosh, spinning vortex of churning water, whistling night wind, and slicing blade hum.",
+      "music": "Soaring shakuhachi flute melody over galloping taiko drums and cinematic strings."
+    },
+    {
+      "id": "s04",
+      "mode": "fl2va",
+      "first": "kf03",
+      "last": "kf04",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "水之呼吸·叁之型 流流舞连斩 (Third Form: Flowing Dance Serpentine Blitz)",
+      "description": "Dropping from the mid-air water wheel of Picture 1 at 0.00s, the Demon Slayer touches down on the courtyard planks and weaves forward in a sinuous S-curve footwork pattern toward the demon on the right, arriving at the dynamic flowing slash pose of Picture 2 at 1.62s. Twin ribbons of glowing azure ukiyo-e currents spiral around his checkered haori while he deflects crimson blood-blade projectiles with rapid Whip-like katana strokes.",
+      "soundscape": "Rapid footwork skidding on timber, rhythmic rushing river currents, three crisp metallic parry rings, and slicing wind.",
+      "music": "Fast syncopated shamisen and booming taiko rhythm."
+    },
+    {
+      "id": "s05",
+      "mode": "fl2va",
+      "first": "kf04",
+      "last": "kf05",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "水之呼吸·拾之型 生生流转水龙显形 (Tenth Form: Constant Flux Water Dragon Manifestation)",
+      "description": "From the serpentine slash stance of Picture 1 at 0.00s, the Demon Slayer rotations build rotational momentum until a colossal ukiyo-e azure Water Dragon with foaming white fangs and glowing cyan eyes materializes around his katana in Picture 2 at 1.62s. The camera arcs into a dramatic low-angle hero view as the coiling water dragon rises beneath the silver full moon, illuminating the courtyard with blue reflections.",
+      "soundscape": "Deep oceanic rumble, roaring water dragon howl, howling gale, and high-pitched katana vibration.",
+      "music": "Crescendo of full orchestra, choir accents, and thunderous taiko rolls."
+    },
+    {
+      "id": "s01_i2va",
+      "mode": "i2va",
+      "first": "kf00",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "[Workflow B I2VA] 月下对峙起势·仅首帧约束 (I2VA Standoff to Water Dash)",
+      "description": "Starting from <Picture 1> at 0.00s in the moonlit wooden castle courtyard, the Demon Slayer boy in his crimson-and-black checkered haori channels Total Concentration Water Breathing and dashes forward toward the camera while blue-and-white ukiyo-e water waves burst from his black katana.",
+      "soundscape": "Sharp inhalation, wooden floorboards creaking, surging water waves, and metallic sword resonance.",
+      "music": "Tense shamisen plucking building into fast taiko drums."
+    }
+  ]
+}

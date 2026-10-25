@@ -1,0 +1,81 @@
+{
+  "round": "round01e",
+  "title": "Sub04 Batch 1E — Decisive Neck Slash, Ember Dissolution & Blade Sheathing (s18..s20 + s20_i2va + s16_s17_merged73)",
+  "hypothesis": "Shared-lineage 1344x768 keyframes kf00..kf20 with 39f FL2VA multi-seed Gacha outperform I2VA and 73f merged windows while keeping input_jobs.tar <= 16.5 MB for zero Stage 0 upload timeouts.",
+  "shots": [
+    {
+      "id": "s18",
+      "mode": "fl2va",
+      "first": "kf17",
+      "last": "kf18",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "烈日余波·金焰火环扩散崩解 (Horizontal Slash to Expanding Solar Shockwave Ring)",
+      "description": "From the decisive horizontal slash follow-through in Picture 1 at 0.00s, a brilliant circular shockwave ring of golden-crimson solar fire expands outward across the wooden courtyard deck in Picture 2 at 1.62s while the Demon Slayer holds his low follow-through stance and the defeated demon begins crumbling into glowing embers.",
+      "soundscape": "Brief dramatic silence followed by a resonant booming shockwave of solar fire and crackling embers.",
+      "music": "Single deep taiko boom and sustained ethereal choir chord."
+    },
+    {
+      "id": "s19",
+      "mode": "fl2va",
+      "first": "kf18",
+      "last": "kf19",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "恶鬼化烬·红叶漫天消散 (Demon Disintegrating into Golden Embers & Maple Leaves)",
+      "description": "As the expanding solar fire shockwave ring of Picture 1 at 0.00s subsides into warm golden light, the defeated demon dissolves into a rising spiral of glowing orange-gold cinders and drifting ash toward the silver full moon in Picture 2 at 1.62s, while the Demon Slayer calmly stands upright with his cooling black blade.",
+      "soundscape": "Soft crackling of fading embers, gentle night breeze rustling autumn maple leaves, and a quiet exhale.",
+      "music": "Melancholic solo shakuhachi flute and delicate koto harp arpeggios."
+    },
+    {
+      "id": "s20",
+      "mode": "fl2va",
+      "first": "kf19",
+      "last": "kf20",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "残心纳刀·月下静谧终章 (Quiet Blade-Sheathing Resolution Under the Moon)",
+      "description": "From the rising ember aftermath of Picture 1 at 0.00s, the Demon Slayer calmly slides his black Nichirin katana back into its scabbard at his waist, arriving at the serene moonlit portrait of Picture 2 at 1.62s as the last golden embers and soft out-of-focus red maple leaves drift across the quiet wooden courtyard.",
+      "soundscape": "Smooth metallic slide of the katana blade followed by a crisp scabbard click (koiguchi), gentle night wind, and distant temple bell.",
+      "music": "Serene final koto chord fading into peaceful silence."
+    },
+    {
+      "id": "s20_i2va",
+      "mode": "i2va",
+      "first": "kf19",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "[Workflow B I2VA] 残心纳刀·仅首帧约束 (I2VA Quiet Blade Sheathing)",
+      "description": "Starting from <Picture 1> at 0.00s as golden embers and red maple leaves drift upward into the moonlit sky, the Demon Slayer calmly sheathes his black katana with a crisp click and stands in quiet reflection.",
+      "soundscape": "Crisp katana scabbard click and gentle night breeze.",
+      "music": "Soft shakuhachi and koto resolution."
+    },
+    {
+      "id": "s16_s17_merged73",
+      "mode": "fl2va",
+      "first": "kf15",
+      "last": "kf17",
+      "num_frames": 73,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "[Workflow B 73f] 日晕之龙破盾接水平斩首跨拍长镜 (73f Merged Dragon Shield Break to Neck Slash)",
+      "description": "From the sweeping courtyard charge wrapped in the golden Solar Fire Dragon in Picture 1 at 0.00s, the Demon Slayer bursts straight through the demon's shattering crimson blood barrier around 1.50s and executes a decisive horizontal solar slash across the demon's neck in Picture 2 at 3.04s.",
+      "soundscape": "Undulating roar of the solar fire dragon, explosive shield-shattering impact, and razor-sharp katana slice.",
+      "music": "Driving taiko rhythms building to a climactic brass crescendo and sharp strike."
+    }
+  ]
+}

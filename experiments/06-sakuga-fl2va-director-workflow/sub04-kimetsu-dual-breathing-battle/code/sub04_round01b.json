@@ -1,0 +1,96 @@
+{
+  "round": "round01b",
+  "title": "Sub04 Batch 1B — Water Dragon Impact & Hinokami Awakening (s06..s09 + s07_i2va + s02_s03_merged73)",
+  "hypothesis": "Shared-lineage 1344x768 keyframes kf00..kf20 with 39f FL2VA multi-seed Gacha outperform I2VA and 73f merged windows while keeping input_jobs.tar <= 16.5 MB for zero Stage 0 upload timeouts.",
+  "shots": [
+    {
+      "id": "s06",
+      "mode": "fl2va",
+      "first": "kf05",
+      "last": "kf06",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "水龙轰击血鬼术·震退滑行蓄力 (Water Dragon Clash & Back-Skid Impact)",
+      "description": "The colossal azure Water Dragon from Picture 1 at 0.00s slams into the demon's dark-crimson Blood Demon Art barrier in a blinding explosion of water mist and crimson lightning, forcing the Demon Slayer to skid backward across the wet wooden courtyard into the low defensive crouch of Picture 2 at 1.62s. His katana carves glowing sparks along the floorboards while dissipating blue steam and red embers swirl around him.",
+      "soundscape": "Massive hydro-shockwave explosion, shattering timber, metallic blade scraping across wooden planks, and heavy breathing.",
+      "music": "Sudden dramatic orchestral hit followed by a tense, suspended taiko heartbeat."
+    },
+    {
+      "id": "s07",
+      "mode": "fl2va",
+      "first": "kf06",
+      "last": "kf07",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "全集中·火之神神乐觉醒燃刃 (Hinokami Kagura Solar Flame Awakening)",
+      "description": "From the low skidding crouch of Picture 1 at 0.00s, the camera pushes into a tight medium close-up as the Demon Slayer exhales two glowing ribbons of golden-white solar breath and his black Nichirin katana ignites into roaring crimson-and-gold Hinokami Kagura solar flames at 1.62s (Picture 2). His forehead scar flares dark crimson, his amber eyes blaze with reflected firelight, and autumn maple leaves catch glowing embers around him.",
+      "soundscape": "Deep resonant breath exhalation, sudden roaring ignition of solar fire, crackling flames, and a ringing sacred bell chime.",
+      "music": "Sacred kagura flute and solemn choir erupting into blazing heroic brass and taiko."
+    },
+    {
+      "id": "s08",
+      "mode": "fl2va",
+      "first": "kf07",
+      "last": "kf08",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "火之神神乐·圆舞一闪 (Hinokami Kagura: Dance First Solar Slash)",
+      "description": "From the close-up solar awakening stance in Picture 1 at 0.00s, the Demon Slayer leaps forward and swings his blazing Nichirin katana downward in a sweeping 180-degree crescent of crimson-and-gold Hinokami Kagura fire, landing in the dynamic slash follow-through of Picture 2 at 1.62s. Volumetric ukiyo-e solar flames, glowing embers, and scorched maple leaves trail the blade across the wooden courtyard.",
+      "soundscape": "Roaring solar flame whoosh, explosive downward katana cleave, crackling fire embers, and timber impact.",
+      "music": "Blazing kagura taiko drums and heroic brass fanfare."
+    },
+    {
+      "id": "s09",
+      "mode": "fl2va",
+      "first": "kf08",
+      "last": "kf09",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "烈焰折线疾驱突进 (Solar Flame Zigzag Courtyard Blitz)",
+      "description": "Immediately following the downward solar arc of Picture 1 at 0.00s, the Demon Slayer kicks off the scorched floorboards and sprints in a blinding Z-shaped zigzag trajectory between the wooden castle pillars toward the background, trailing a continuous ribbon of crimson-gold ukiyo-e fire and speed lines into the low blitz lunge of Picture 2 at 1.62s.",
+      "soundscape": "Three rapid sonic-boom footsteps on wood, roaring trail of fire, and whistling wind.",
+      "music": "Relentless double-time taiko percussion and rapid shamisen tremolos."
+    },
+    {
+      "id": "s07_i2va",
+      "mode": "i2va",
+      "first": "kf06",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "[Workflow B I2VA] 火之神神乐觉醒·仅首帧约束 (I2VA Hinokami Kagura Awakening)",
+      "description": "Starting from <Picture 1> at 0.00s as the Demon Slayer braces on the wooden courtyard floor, he exhales glowing solar mist and ignites his black katana into roaring crimson-and-gold Hinokami Kagura flames while the camera pushes in on his fierce expression.",
+      "soundscape": "Deep breath exhalation, explosive ignition of solar fire, and crackling embers.",
+      "music": "Sacred kagura flute rising into heroic orchestral strings."
+    },
+    {
+      "id": "s02_s03_merged73",
+      "mode": "fl2va",
+      "first": "kf01",
+      "last": "kf03",
+      "num_frames": 73,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "[Workflow B 73f] 壹之型交锋接贰之型水车跨拍长镜 (73f Merged Clash to Water Wheel)",
+      "description": "From the low Water Breathing charge in Picture 1 at 0.00s, the Demon Slayer clashes his wave-wrapped katana against the silver-haired demon's crimson blood scythes in the courtyard center around 1.50s, then vaults high into the moonlit sky to spin 360 degrees into the circular ukiyo-e Water Wheel slash of Picture 2 at 3.04s.",
+      "soundscape": "Metallic sword clash, crashing ocean waves, explosive upward leap, and spinning water vortex.",
+      "music": "High-tempo taiko war drums and soaring shakuhachi flute."
+    }
+  ]
+}

@@ -1,0 +1,285 @@
+{
+  "title": "Sub04 — 鬼灭之刃风格·水火双呼吸死斗 30秒导演母带分镜表 (20 Shots / 720 Frames @ 24fps)",
+  "total_frames_30s": 720,
+  "fps": 24,
+  "batches": [
+    {
+      "round": "round01a",
+      "batch_dir": "outputs/batches/exp06_sub04_round01a/1"
+    },
+    {
+      "round": "round01b",
+      "batch_dir": "outputs/batches/exp06_sub04_round01b/1"
+    },
+    {
+      "round": "round01c",
+      "batch_dir": "outputs/batches/exp06_sub04_round01c/1"
+    },
+    {
+      "round": "round01d",
+      "batch_dir": "outputs/batches/exp06_sub04_round01d/1"
+    },
+    {
+      "round": "round01e",
+      "batch_dir": "outputs/batches/exp06_sub04_round01e/1"
+    },
+    {
+      "round": "round02a",
+      "batch_dir": "outputs/batches/exp06_sub04_round02a/1"
+    }
+  ],
+  "slots": [
+    {
+      "slot_id": "s01",
+      "act": "Act I: 水之呼吸·遭遇交锋",
+      "first": "kf00",
+      "last": "kf01",
+      "target_frames_30s": 37,
+      "title": "月下对峙·水之呼吸起势",
+      "ablation_sources": [
+        {
+          "shot_id": "s01_i2va"
+        }
+      ]
+    },
+    {
+      "slot_id": "s02",
+      "act": "Act I: 水之呼吸·遭遇交锋",
+      "first": "kf01",
+      "last": "kf02",
+      "target_frames_30s": 36,
+      "title": "水之呼吸·壹之型 水面斩击交锋",
+      "ablation_sources": [
+        {
+          "shot_id": "s02_s03_merged73",
+          "sub_range": [
+            0,
+            39
+          ]
+        }
+      ]
+    },
+    {
+      "slot_id": "s03",
+      "act": "Act I: 水之呼吸·遭遇交锋",
+      "first": "kf02",
+      "last": "kf03",
+      "target_frames_30s": 36,
+      "title": "水之呼吸·贰之型 水车腾空翻转",
+      "ablation_sources": [
+        {
+          "shot_id": "s02_s03_merged73",
+          "sub_range": [
+            34,
+            73
+          ]
+        }
+      ]
+    },
+    {
+      "slot_id": "s04",
+      "act": "Act I: 水之呼吸·遭遇交锋",
+      "first": "kf03",
+      "last": "kf04",
+      "target_frames_30s": 36,
+      "title": "水之呼吸·叁之型 流流舞连斩",
+      "ablation_sources": []
+    },
+    {
+      "slot_id": "s05",
+      "act": "Act I: 水之呼吸·遭遇交锋",
+      "first": "kf04",
+      "last": "kf05",
+      "target_frames_30s": 36,
+      "title": "水之呼吸·拾之型 生生流转水龙显形",
+      "ablation_sources": []
+    },
+    {
+      "slot_id": "s06",
+      "act": "Act I: 水之呼吸·遭遇交锋",
+      "first": "kf05",
+      "last": "kf06",
+      "target_frames_30s": 36,
+      "title": "水龙轰击血鬼术·震退滑行蓄力",
+      "ablation_sources": []
+    },
+    {
+      "slot_id": "s07",
+      "act": "Act I: 水之呼吸·遭遇交锋",
+      "first": "kf06",
+      "last": "kf07",
+      "target_frames_30s": 37,
+      "title": "全集中·火之神神乐觉醒燃刃",
+      "ablation_sources": [
+        {
+          "shot_id": "s07_i2va"
+        }
+      ]
+    },
+    {
+      "slot_id": "s08",
+      "act": "Act II: 火之神神乐·觉醒连段",
+      "first": "kf07",
+      "last": "kf08",
+      "target_frames_30s": 36,
+      "title": "火之神神乐·圆舞一闪",
+      "ablation_sources": [
+        {
+          "shot_id": "s08_i2va"
+        }
+      ]
+    },
+    {
+      "slot_id": "s09",
+      "act": "Act II: 火之神神乐·觉醒连段",
+      "first": "kf08",
+      "last": "kf09",
+      "target_frames_30s": 35,
+      "title": "烈焰折线疾驱突进",
+      "ablation_sources": [
+        {
+          "shot_id": "s09_s10_merged73",
+          "sub_range": [
+            0,
+            39
+          ]
+        }
+      ]
+    },
+    {
+      "slot_id": "s10",
+      "act": "Act II: 火之神神乐·觉醒连段",
+      "first": "kf09",
+      "last": "kf10",
+      "target_frames_30s": 35,
+      "title": "火之神神乐·烈日斩碎血甲",
+      "ablation_sources": [
+        {
+          "shot_id": "s09_s10_merged73",
+          "sub_range": [
+            34,
+            73
+          ]
+        }
+      ]
+    },
+    {
+      "slot_id": "s11",
+      "act": "Act II: 火之神神乐·觉醒连段",
+      "first": "kf10",
+      "last": "kf11",
+      "target_frames_30s": 36,
+      "title": "火之神神乐·碧罗之天回旋火轮",
+      "ablation_sources": [
+        {
+          "shot_id": "s11_i2va"
+        }
+      ]
+    },
+    {
+      "slot_id": "s12",
+      "act": "Act II: 火之神神乐·觉醒连段",
+      "first": "kf11",
+      "last": "kf12",
+      "target_frames_30s": 36,
+      "title": "上弦血鬼术·赤黑雷涡爆发",
+      "ablation_sources": []
+    },
+    {
+      "slot_id": "s13",
+      "act": "Act II: 火之神神乐·觉醒连段",
+      "first": "kf12",
+      "last": "kf13",
+      "target_frames_30s": 36,
+      "title": "半空烈焰对轰血雷·极光冲击波",
+      "ablation_sources": []
+    },
+    {
+      "slot_id": "s14",
+      "act": "Act II: 火之神神乐·觉醒连段",
+      "first": "kf13",
+      "last": "kf14",
+      "target_frames_30s": 36,
+      "title": "借力腾空·日晕之龙显圣",
+      "ablation_sources": []
+    },
+    {
+      "slot_id": "s15",
+      "act": "Act III: 日晕之龙·头舞终局",
+      "first": "kf14",
+      "last": "kf15",
+      "target_frames_30s": 36,
+      "title": "火之神神乐·日晕之龙俯冲天降",
+      "ablation_sources": [
+        {
+          "shot_id": "s15_i2va"
+        }
+      ]
+    },
+    {
+      "slot_id": "s16",
+      "act": "Act III: 日晕之龙·头舞终局",
+      "first": "kf15",
+      "last": "kf16",
+      "target_frames_30s": 35,
+      "title": "日晕之龙头舞·炎龙噬碎终极血盾",
+      "ablation_sources": [
+        {
+          "shot_id": "s16_s17_merged73",
+          "sub_range": [
+            0,
+            39
+          ]
+        }
+      ]
+    },
+    {
+      "slot_id": "s17",
+      "act": "Act III: 日晕之龙·头舞终局",
+      "first": "kf16",
+      "last": "kf17",
+      "target_frames_30s": 35,
+      "title": "一刀两断·烈日水平斩首一闪",
+      "ablation_sources": [
+        {
+          "shot_id": "s16_s17_merged73",
+          "sub_range": [
+            34,
+            73
+          ]
+        }
+      ]
+    },
+    {
+      "slot_id": "s18",
+      "act": "Act III: 日晕之龙·头舞终局",
+      "first": "kf17",
+      "last": "kf18",
+      "target_frames_30s": 37,
+      "title": "烈日余波·金焰火环扩散崩解",
+      "ablation_sources": []
+    },
+    {
+      "slot_id": "s19",
+      "act": "Act III: 日晕之龙·头舞终局",
+      "first": "kf18",
+      "last": "kf19",
+      "target_frames_30s": 37,
+      "title": "恶鬼化烬·红叶漫天消散",
+      "ablation_sources": []
+    },
+    {
+      "slot_id": "s20",
+      "act": "Act III: 日晕之龙·头舞终局",
+      "first": "kf19",
+      "last": "kf20",
+      "target_frames_30s": 36,
+      "title": "残心纳刀·月下静谧终章",
+      "ablation_sources": [
+        {
+          "shot_id": "s20_i2va"
+        }
+      ]
+    }
+  ]
+}

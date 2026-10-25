@@ -1,0 +1,97 @@
+{
+  "round": "round01c",
+  "title": "Sub04 Batch 1C — Hinokami Combo & Clear Blue Sky vs Blood Lightning (s10..s13 + s08_i2va + s11_i2va)",
+  "hypothesis": "Shared-lineage 1344x768 keyframes kf00..kf20 with 39f FL2VA multi-seed Gacha outperform I2VA and 73f merged windows while keeping input_jobs.tar <= 16.5 MB for zero Stage 0 upload timeouts.",
+  "shots": [
+    {
+      "id": "s10",
+      "mode": "fl2va",
+      "first": "kf09",
+      "last": "kf10",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777,
+        108
+      ],
+      "title": "火之神神乐·烈日斩碎血甲 (Solar C-Curve Armor-Shattering Slash)",
+      "description": "Out of the high-speed zigzag blitz in Picture 1 at 0.00s, the Demon Slayer closes to point-blank range and unleashes a massive C-shaped upward solar flame slash that shatters the silver-haired demon's dark-crimson blood armor in Picture 2 at 1.62s. A blinding golden-white impact flash and thousands of glowing ember particles erupt between the two fighters.",
+      "soundscape": "Deafening fiery blade impact, shattering crystalline blood armor, roaring flames, and demon snarl.",
+      "music": "Explosive orchestral brass hit with rapid taiko accents."
+    },
+    {
+      "id": "s11",
+      "mode": "fl2va",
+      "first": "kf10",
+      "last": "kf11",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "火之神神乐·碧罗之天回旋火轮 (Clear Blue Sky 360-Degree Solar Flame Ring)",
+      "description": "From the close-range armor-shattering slash in Picture 1 at 0.00s, the Demon Slayer somersaults high into the night sky and spins his flaming katana in a complete 360-degree halo of crimson-and-gold solar fire framed directly against the giant silver full moon in Picture 2 at 1.62s. Swirling golden sparks and red maple leaves orbit the blazing solar wheel.",
+      "soundscape": "Ascending wind rush, circular roaring vortex of solar fire, and resonant metallic katana ring.",
+      "music": "Soaring choir and high strings over thunderous kagura drums."
+    },
+    {
+      "id": "s12",
+      "mode": "fl2va",
+      "first": "kf11",
+      "last": "kf12",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "上弦血鬼术·赤黑雷涡爆发 (Blood Demon Art: Crimson Lightning Vortex)",
+      "description": "As the solar flame ring shines overhead in Picture 1 at 0.00s, the camera whips down to the courtyard where the enraged silver-haired Upper-Rank demon spreads both clawed hands and unleashes a violent tornado of black-and-crimson Blood Demon Art lightning and razor-sharp blood crescents in Picture 2 at 1.62s, splintering the surrounding wooden railings.",
+      "soundscape": "Ear-splitting crackle of dark crimson lightning, demonic energy roar, and splintering castle timber.",
+      "music": "Menacing low brass, dissonant strings, and thunderous percussion."
+    },
+    {
+      "id": "s13",
+      "mode": "fl2va",
+      "first": "kf12",
+      "last": "kf13",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777,
+        108
+      ],
+      "title": "半空烈焰对轰血雷·极光冲击波 (Mid-Air Solar Flame vs Crimson Lightning Clash)",
+      "description": "From the demon's erupting blood-lightning vortex in Picture 1 at 0.00s, the Demon Slayer dives diagonally from the upper left and slams his blazing solar katana directly into the demon's crimson lightning claws in mid-air at 1.62s (Picture 2). Golden solar fire fills the left half of the frame while black-crimson lightning fills the right, sending a radial shockwave ring across the moonlit sky.",
+      "soundscape": "Cataclysmic mid-air collision of fire and lightning, metallic shockwave boom, and crackling energy arcs.",
+      "music": "Full orchestral tutti climax with rapid taiko and choir."
+    },
+    {
+      "id": "s08_i2va",
+      "mode": "i2va",
+      "first": "kf07",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "[Workflow B I2VA] 火之神神乐·圆舞仅首帧约束 (I2VA Hinokami Kagura First Slash)",
+      "description": "Starting from <Picture 1> at 0.00s with his flaming katana held horizontally, the Demon Slayer leaps forward and swings a wide downward arc of crimson-and-gold ukiyo-e solar fire across the moonlit courtyard.",
+      "soundscape": "Roaring solar flame whoosh, explosive katana slash, and crackling embers.",
+      "music": "Blazing kagura taiko drums and heroic brass."
+    },
+    {
+      "id": "s11_i2va",
+      "mode": "i2va",
+      "first": "kf10",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "[Workflow B I2VA] 碧罗之天回旋火轮·仅首帧约束 (I2VA Clear Blue Sky Flame Ring)",
+      "description": "Starting from <Picture 1> at 0.00s after shattering the demon's blood armor, the Demon Slayer leaps into the night sky and spins his flaming sword in a 360-degree crimson-and-gold solar ring under the full moon.",
+      "soundscape": "Upward leap whoosh and circular roaring vortex of solar fire.",
+      "music": "Soaring choir and high strings over taiko drums."
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "round": "round01d",
+  "title": "Sub04 Batch 1D — Solar Dragon Manifestation & Shield Breakthrough (s14..s17 + s15_i2va + s09_s10_merged73)",
+  "hypothesis": "Shared-lineage 1344x768 keyframes kf00..kf20 with 39f FL2VA multi-seed Gacha outperform I2VA and 73f merged windows while keeping input_jobs.tar <= 16.5 MB for zero Stage 0 upload timeouts.",
+  "shots": [
+    {
+      "id": "s14",
+      "mode": "fl2va",
+      "first": "kf13",
+      "last": "kf14",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "借力腾空·日晕之龙显圣 (Vaulting into the Moon & Solar Fire Dragon Manifestation)",
+      "description": "Rebounding off the mid-air shockwave in Picture 1 at 0.00s, the Demon Slayer backflips high above the castle rooftops toward the giant silver moon as a colossal golden-and-crimson ukiyo-e Solar Fire Dragon with blazing eyes and fiery whiskers materializes around his katana in Picture 2 at 1.62s.",
+      "soundscape": "High-altitude wind rush, sacred dragon roar of roaring solar fire, and ringing Nichirin steel.",
+      "music": "Triumphant sacred kagura flute and soaring choir crescendo."
+    },
+    {
+      "id": "s15",
+      "mode": "fl2va",
+      "first": "kf14",
+      "last": "kf15",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777,
+        108
+      ],
+      "title": "火之神神乐·日晕之龙俯冲天降 (Dragon Sun Halo Head Dance Plunge to Courtyard Charge)",
+      "description": "From the high-altitude plunge in front of the silver full moon in Picture 1 at 0.00s, the Demon Slayer touches down onto the wooden courtyard deck and surges forward in a low sprint as the colossal crimson-and-gold Solar Fire Dragon coils along his blade toward the bracing Upper-Rank Demon in Picture 2 at 1.62s. Streams of golden sparks, solar ribbons, and burning maple leaves streak across the deck.",
+      "soundscape": "Roaring solar dragon descent, heavy landing on wooden floorboards, rapid sprinting footsteps, and crackling golden flames.",
+      "music": "Epic choir and full orchestra surging with thunderous kagura taiko."
+    },
+    {
+      "id": "s16",
+      "mode": "fl2va",
+      "first": "kf15",
+      "last": "kf16",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "日晕之龙头舞·炎龙噬碎终极血盾 (Coiling Solar Dragon Charge Shatters Blood Barrier)",
+      "description": "From the sweeping courtyard charge in Picture 1 at 0.00s, the Demon Slayer and the colossal ukiyo-e Solar Fire Dragon slam head-on into the demon's defensive guard, the dragon's fiery jaws and blazing Nichirin katana bursting straight through the shattering crystalline dark-crimson blood barrier at point-blank range in Picture 2 at 1.62s.",
+      "soundscape": "Undulating roar of the solar fire dragon, dragon jaws crunching through crystalline blood energy, and explosive barrier shatter.",
+      "music": "Soaring shakuhachi and strings racing into a climactic brass impact."
+    },
+    {
+      "id": "s17",
+      "mode": "fl2va",
+      "first": "kf16",
+      "last": "kf17",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777,
+        108
+      ],
+      "title": "一刀两断·烈日水平斩首一闪 (Point-Blank Breakthrough to Decisive Horizontal Neck Slash)",
+      "description": "Bursting through the shattering blood barrier in Picture 1 at 0.00s, the Demon Slayer flashes past the demon and executes a single lightning-fast horizontal solar slash cleanly bisecting the frame across the demon's neck, landing in the low follow-through crouch amid swirling fire rings in Picture 2 at 1.62s.",
+      "soundscape": "Shattering crimson shards, one razor-sharp metallic katana slice through the neck, and roaring solar fire.",
+      "music": "Climactic orchestral brass crescendo cut by a razor-sharp taiko strike."
+    },
+    {
+      "id": "s15_i2va",
+      "mode": "i2va",
+      "first": "kf14",
+      "num_frames": 39,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "[Workflow B I2VA] 日晕之龙俯冲·仅首帧约束 (I2VA Solar Dragon Dive)",
+      "description": "Starting from <Picture 1> at 0.00s silhouetted against the giant full moon with the golden Solar Fire Dragon coiling around him, the Demon Slayer dives steeply down toward the castle courtyard in a trail of crimson-and-gold flames.",
+      "soundscape": "Roaring solar dragon descent and high-speed wind rush.",
+      "music": "Epic choir and thunderous kagura taiko."
+    },
+    {
+      "id": "s09_s10_merged73",
+      "mode": "fl2va",
+      "first": "kf08",
+      "last": "kf10",
+      "num_frames": 73,
+      "seeds": [
+        42,
+        777
+      ],
+      "title": "[Workflow B 73f] 烈焰折线突进接碎甲斩跨拍长镜 (73f Merged Zigzag Blitz to Armor Slash)",
+      "description": "From the downward solar slash follow-through in Picture 1 at 0.00s, the Demon Slayer sprints in a blazing Z-shaped fire trail across the courtyard around 1.50s and unleashes a massive upward C-curve solar flame slash that shatters the demon's crimson blood armor in Picture 2 at 3.04s.",
+      "soundscape": "Rapid footsteps on wood, roaring fire trail, and explosive armor-shattering blade impact.",
+      "music": "Relentless double-time taiko percussion and brass stabs."
+    }
+  ]
+}
